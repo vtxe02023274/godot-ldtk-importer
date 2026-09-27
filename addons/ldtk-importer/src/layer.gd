@@ -71,30 +71,45 @@ static func create_entity_layer(
 	layer.iid = layer_data.iid
 	layer.position = layer_def.offset
 
-	# Create a dummy child node so EntityRef fields get a correct NodePath
-	# I need to find a better way to do this, but there are lots of funny behaviours to deal with.
-	var pathResolver = Node2D.new()
-	pathResolver.name = "NodePathResolver"
-	layer.add_child(pathResolver)
-	Util.path_resolvers.append(pathResolver)
-
-	var entities: Array = LayerUtil.parse_entity_instances(
+	var entities: Array = parse_entity_instances(
 			layer_data.entityInstances,
 			entity_defs,
-			pathResolver
+			layer
 	)
 
 	# Add instance references
 	layer.definition = layer_def
 	layer.entities = entities
 
-	if (Util.options.use_entity_placeholders):
-		LayerUtil.placeholder_counts.clear()
+	# TODO: Get definitions only for entities on this layer
+	layer.entity_definitions = entity_defs
+
+	var use_placeholders : bool = Util.options.use_entity_placeholders
+
+	if Util.entity_mapper:
 		for entity in entities:
-				var placeholder: LDTKEntity = LayerUtil.create_entity_placeholder(layer, entity)
-				Util.update_instance_reference(placeholder.iid, placeholder)
-				#try_push_placeholder_ref(placeholder, pathResolver)
-				try_push_placeholder_ref(placeholder, placeholder)
+			var node: Node = create_entity(level, layer, entity)
+			if not node and use_placeholders:
+				node = create_entity_placeholder(level, layer, entity)
+				push_placeholder_ref(node, entity_defs[entity.defUid])
+			Util.update_instance_reference(entity.iid, node)
+	elif use_placeholders:
+		for entity in entities:
+			var node: Node = create_entity_placeholder(level, layer, entity)
+			push_placeholder_ref(node, entity_defs[entity.defUid])
+			Util.update_instance_reference(entity.iid, node)
+
+	#if Util.options.use_entity_placeholders:
+		## Placeholders
+		#for entity in entities:
+				#var placeholder: LDTKEntity = create_entity_placeholder(level, layer, entity)
+				#Util.update_instance_reference(placeholder.iid, placeholder)
+				##try_push_placeholder_ref(placeholder, pathResolver)
+				#try_push_placeholder_ref(placeholder, placeholder)
+	#elif Util.entity_mapper:
+		#for entity in entities:
+			#var node: Node = create_entity(level, layer, entity)
+			#Util.update_instance_reference(entity.iid, node)
 
 	return layer
 
@@ -139,7 +154,7 @@ static func create_tile_layer(
 ) -> TileMapLayer:
 
 	# Create Tilemap
-	var tilemap: TileMapLayer = LayerUtil.create_layer_tilemap(layer_data)
+	var tilemap: TileMapLayer = create_tile_map_layer(layer_data)
 	tilemap.position = layer_def.offset
 
 	# Set layer properties on the Tilemap
@@ -162,7 +177,7 @@ static func create_tile_layer(
 
 	if (tile_source_id == null):
 		Util.print("item_fail", "Null Tilemap on layerInstance: '%s'" % [layer_name], 2)
-		push_warning("Detected null tilemap on a level '%s' layer instance '%s'. Please fix this in your LDTK project file." % [current_level, layer_name])
+		push_warning("Detected null tilemap on a level '%s' layer instance '%s'. Please fix this in your LDTK project file." % [__current_level, layer_name])
 		return tilemap
 
 	__place_tiles(tilemap, tiles, tile_source_id, grid_size)
@@ -171,9 +186,82 @@ static func create_tile_layer(
 
 #endregion
 
-static func try_push_placeholder_ref(
+static func create_entity(
+		level: LDTKLevel,
+		layer: Node2D,
+		data: Dictionary
+) -> Node:
+	var node: Node = Util.entity_mapper.create_instance(data)
+
+	if node:
+		layer.add_child(node, true)
+
+	return node
+
+static func create_entity_placeholder(
+		level: LDTKLevel,
+		layer: Node2D,
+		data: Dictionary
+) -> LDTKEntity:
+	var placeholder: LDTKEntity = EntityPlaceHolder.instantiate()
+	placeholder.name = data.identifier
+
+	# Set properties
+	for prop in data.keys():
+		placeholder[prop] = data[prop]
+
+	layer.add_child(placeholder, true)
+
+	return placeholder
+
+static func create_tile_map_layer(layer_data: Dictionary) -> TileMapLayer:
+	var grid_size = int(layer_data.__gridSize)
+
+	var tilemap := TileMapLayer.new()
+	tilemap.name = layer_data.__identifier
+	tilemap.tile_set = Util.tilesets.get(grid_size, null)
+	var offset = Vector2(layer_data.__pxTotalOffsetX, layer_data.__pxTotalOffsetY)
+	tilemap.position = offset
+
+	return tilemap
+
+static func create_tile_map_layer_child(tilemap: TileMapLayer) -> TileMapLayer:
+	var child := TileMapLayer.new()
+	var count := tilemap.get_child_count() + 1
+	child.name = tilemap.name + str(count)
+	child.tile_set = tilemap.tile_set
+	return child
+
+static func parse_entity_instances(
+		entities: Array,
+		entity_defs: Dictionary,
+		node: Node #PathResolver
+) -> Array:
+	return entities.map(
+		func(entity):
+			#var definition = entity_defs[entity.defUid]
+			var entity_data := {
+				"iid": entity.iid,
+				"defUid": int(entity.defUid),
+				"identifier": entity.__identifier,
+				"smart_color": Color.from_string(entity.__smartColor, Color.WHITE),
+				"pxSize": Vector2i(entity.width, entity.height),
+				"position": Vector2i(entity.px[0], entity.px[1]),
+				#"pivot": Vector2(entity.__pivot[0], entity.__pivot[1]),
+				#"fields": FieldUtil.create_fields(entity.fieldInstances, pathResolver),
+				#"definition": definition,
+			}
+
+			var fields := FieldUtil.create_fields(entity.fieldInstances, node) # pathResolver
+			if fields:
+				entity_data["fields"] = fields
+
+			return entity_data
+	)
+
+static func push_placeholder_ref(
 		placeholder: LDTKEntity,
-		entity: Node
+		definition: Dictionary
 ) -> void:
 	if not Util.options.resolve_entityrefs: return
 	if not placeholder.fields: return
@@ -181,8 +269,9 @@ static func try_push_placeholder_ref(
 	placeholder.fields = str_to_var(var_to_str(placeholder.fields))
 	var field_defs = {}
 
-	for key in placeholder.definition.field_defs:
-		var def = placeholder.definition.field_defs[key]
+	# WARNING: We need our definition!
+	for key in definition.field_defs:
+		var def = definition.field_defs[key]
 		field_defs[def.identifier] = def
 
 	for key in placeholder.fields:
@@ -194,9 +283,9 @@ static func try_push_placeholder_ref(
 
 		if field is Array:
 			for index in range(field.size()):
-				Util.add_unresolved_reference(field, index, entity)
+				Util.add_unresolved_reference(field, index, placeholder)
 		else:
-			Util.add_unresolved_reference(placeholder.fields, key, entity)
+			Util.add_unresolved_reference(placeholder.fields, key, placeholder)
 
 static func __place_tiles(
 		tilemap: TileMapLayer,

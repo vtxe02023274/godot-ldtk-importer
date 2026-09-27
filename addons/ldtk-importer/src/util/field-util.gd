@@ -58,7 +58,8 @@ static func parse_field(field: Dictionary) -> Variant:
 			return __parse_tile(value) as AtlasTexture
 		"EntityRef":
 			hitUnresolved = true
-			return value.entityIid as String
+			#return value.entityIid as String
+			return LDTKReference.new(value.entityIid)
 		"LocalEnum":
 			return __parse_enum(localEnum, value) as String
 		"Array<Int>":
@@ -81,8 +82,9 @@ static func parse_field(field: Dictionary) -> Variant:
 		"Array<EntityRef>":
 			hitUnresolved = true
 			return value.map(
-				func (ref) -> String:
-					return ref.entityIid
+				func (ref: Dictionary) -> LDTKReference:
+					return LDTKReference.new(ref.entityIid)
+					#return ref.entityIid
 			)
 		"Array<LocalEnum>":
 			var enums: Array[String] = []

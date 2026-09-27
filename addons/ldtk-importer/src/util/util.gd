@@ -148,8 +148,11 @@ static var instance_refs := {}
 static var unresolved_refs := []
 static var path_resolvers := []
 
-static func update_instance_reference(iid: String, instance: Variant) -> void:
-	instance_refs[iid] = instance
+static func update_instance_reference(iid: String, node: Node) -> void:
+	if not instance_refs.has(iid):
+		instance_refs[iid] = LDTKReference.new(iid, node)
+	else:
+		instance_refs[iid].node = node
 
 static func add_tileset_reference(uid: int, atlas: TileSetAtlasSource) -> void:
 	tileset_refs[uid] = atlas
