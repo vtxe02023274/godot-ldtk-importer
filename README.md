@@ -45,7 +45,7 @@
 - Parses Entity Fields into Godot types
 - **Handles EntityRefs**
 
-# 🚩 Import Options 
+# 🚩 Import Options
 
 ![](img/import-settings.png)
 
@@ -64,7 +64,7 @@ With the `.ldtk` file selected in `FileViewer`, go to the `Import` dock to view 
 	- **Entity Post Import**: *Attach script (see [Post-Import](#-post-import))*
 	- **Level Post Import**: *Attach script (see [Post-Import](#-post-import))*
 	- **World Post Import**: *Attach script (see [Post-Import](#-post-import))*
-	
+
 ## 🧩 Tile Custom Data
 
 LDtk allows you to add custom data to individual tiles in any given tileset.
@@ -90,9 +90,9 @@ Example post-import scripts are included to cover common use cases; feel free to
 @tool
 
 func post_import(tilesets: Dictionary) -> Dictionary:
-    # Behaviour goes here
+	# Behaviour goes here
 
-    return tilesets
+	return tilesets
 ```
 
 ### Post-Import: Entity Layer
@@ -100,13 +100,13 @@ func post_import(tilesets: Dictionary) -> Dictionary:
 @tool
 
 func post_import(entity_layer: LDTKEntityLayer) -> LDTKEntityLayer:
-    var definition: Dictionary = entity_layer.definition
-    var entities: Array = entity_layer.entities
-    for entity in entities:
-        # Perform operations here
-        pass
+	var definition: Dictionary = entity_layer.definition
+	var entities: Array = entity_layer.entities
+	for entity in entities:
+		# Perform operations here
+		pass
 
-    return entity_layer
+	return entity_layer
 ```
 
 ### Post-Import: Level
@@ -114,9 +114,9 @@ func post_import(entity_layer: LDTKEntityLayer) -> LDTKEntityLayer:
 @tool
 
 func post_import(level: LDTKLevel) -> LDTKLevel:
-    # Behaviour goes here
+	# Behaviour goes here
 
-    return level
+	return level
 ```
 
 ### Post-Import: World
@@ -124,9 +124,9 @@ func post_import(level: LDTKLevel) -> LDTKLevel:
 @tool
 
 func post_import(world: LDTKWorld) -> LDTKWorld:
-    # Behaviour goes here
+	# Behaviour goes here
 
-    return world
+	return world
 ```
 
 # ❓FAQ
@@ -167,7 +167,7 @@ There are two things to consider when converting the JSON into a scene:
 
 EntityRef fields are *unresolved* when they are encountered by the importer, because the node it points to might not exist yet (e.g. an entity from Level_1 may point to an entity in Level_2).
 
-To solve this, this LDTK importer provides utility functions for you to add/update these references, which the importer will then try to resolve them *after all the post-import scripts have run*, before saving the scene. 
+To solve this, this LDTK importer provides utility functions for you to add/update these references, which the importer will then try to resolve them *after all the post-import scripts have run*, before saving the scene.
 
 These functions are:
 
@@ -190,7 +190,7 @@ func post_import(entity_layer: LDTKEntityLayer) -> LDTKEntityLayer:
         var scene = SceneTest.instantiate()
         entity_layer.add_child(scene)
 
-        # Update 'iid' to reference this entity node
+		# Update 'iid' to reference this entity node
         Util.update_instance_reference(entity.iid, scene)
 
         # Add unresolved reference (e.g. EntityRef field)
