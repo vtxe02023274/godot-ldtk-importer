@@ -51,9 +51,9 @@ static func check_version(version: String, latest_version: String) -> bool:
 	return true
 
 static func recursive_set_owner(node: Node, owner: Node) -> void:
-	if node.owner and node.owner != owner:
-		return
-	node.set_owner(owner)
+	#if node.owner and node.owner != owner: return
+	if not node.owner: node.set_owner(owner)
+
 	for child in node.get_children():
 		recursive_set_owner(child, owner)
 
