@@ -120,6 +120,13 @@ func _get_import_options(path, index):
 		{"name": "Entity", "default_value":"", "usage": PROPERTY_USAGE_GROUP},
 		{
 			#
+			"name": "entity_mapper",
+			"default_value": "",
+			"property_hint": PROPERTY_HINT_FILE,
+			"hint_string": "*.tres;LDTKEntityMapper"
+		},
+		{
+			#
 			"name": "resolve_entityrefs",
 			"default_value": true,
 		},
@@ -205,6 +212,19 @@ func _import(
 	Util.timer_start(Util.DebugTime.GENERAL)
 	var definitions := DefinitionUtil.build_definitions(world_data)
 	var tileset_overrides := Tileset.get_tileset_overrides(world_data, base_dir, external_levels)
+	# Update EntityMapper
+	Util.entity_mapper = null
+	if options.entity_mapper:
+		var entity_mapper: LDTKEntityMapper = ResourceLoader.load(options.entity_mapper)
+		if entity_mapper:
+			var dirty := DefinitionUtil.update_entity_mapper(entity_mapper, definitions)
+			if dirty:
+				Util.print("item_save", "Saving EntityMapper: [color=#fe8019]%s[/color]" % [options.entity_mapper], 1)
+				ResourceSaver.save(entity_mapper, options.entity_mapper)
+			else:
+				Util.print("item_save", "No changes detected for EntityMapper: [color=#fe8019]%s[/color]" % [options.entity_mapper], 1)
+			# Store to util (used in entity_layers)
+			Util.entity_mapper = entity_mapper
 	Util.timer_finish("Definitions Created")
 
 	# Build Tilesets and save as Resources

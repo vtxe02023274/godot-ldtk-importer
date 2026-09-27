@@ -16,6 +16,9 @@ static var file_version = LDTK_VERSION.UNSUPPORTED
 # Stores import flags (used throughout the importer)
 static var options := {}
 
+# Assigned if using a LDTKEntityMapper resource.
+static var entity_mapper: LDTKEntityMapper
+
 static func parse_file(source_file: String) -> Dictionary:
 	var json := FileAccess.open(source_file, FileAccess.READ)
 	if json == null:

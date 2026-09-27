@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="LDTKEntityMapper" format=3 uid="uid://77cipapul81l"]
+
+[ext_resource type="PackedScene" uid="uid://dispmukeuhra8" path="res://examples/gridvania/light-test.tscn" id="1_g6ibb"]
+[ext_resource type="Script" uid="uid://dgdym08assa44" path="res://examples/gridvania/entity-map.gd" id="2_56fnc"]
+[ext_resource type="Script" uid="uid://cr4c2blnnrtg8" path="res://addons/ldtk-importer/src/resources/ldtk-entity-mapper.gd" id="3_56fnc"]
+
+[resource]
+script = ExtResource("3_56fnc")
+entities = Dictionary[String, PackedScene]({
+"Cross": null,
+"EntityArrayFieldTest": null,
+"EntityFieldTest": null,
+"LightTest": ExtResource("1_g6ibb")
+})
+import_script = ExtResource("2_56fnc")
+metadata/_custom_type_script = "uid://cr4c2blnnrtg8"
