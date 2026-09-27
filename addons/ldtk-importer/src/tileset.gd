@@ -53,7 +53,7 @@ static func build_tilesets(
 	# Add TileSetSources to TileSets
 	# NOTE: We also add Sources to mismatched TileSet sizes (if a layer uses that TilesetDef as an override)
 	for id in tilesets.keys():
-		var tileset: TileSet = tilesets[id]
+		var tileset: LDTKTileSet = tilesets[id]
 		var size: int = tileset.tile_size.x
 
 		for uid in tileset_sources.keys():
@@ -103,7 +103,7 @@ static func build_tilesets(
 
 	return files.values()
 
-static func get_tileset(tile_size: int,base_dir: String) -> TileSet:
+static func get_tileset(tile_size: int,base_dir: String) -> LDTKTileSet:
 	var tileset_name := "tileset_%spx" % [str(tile_size)]
 	var path := "%stilesets/%s.%s" % [
 		base_dir,
@@ -114,11 +114,12 @@ static func get_tileset(tile_size: int,base_dir: String) -> TileSet:
 	if not Util.options.force_tileset_reimport:
 		if ResourceLoader.exists(path):
 			var tileset = ResourceLoader.load(path)
-			if tileset is TileSet:
+			if tileset is LDTKTileSet:
+				Util.print("item_save", "Loaded Tileset: [color=#fe8019][i]'%s'[/i][/color]" % path, 1)
 				return tileset
 
 	# Create new TileSet
-	var tileset := TileSet.new()
+	var tileset := LDTKTileSet.new()
 	tileset.resource_name = tileset_name
 	tileset.tile_size = Vector2i(tile_size, tile_size)
 
@@ -296,7 +297,7 @@ static func save_tilesets(tilesets: Dictionary, base_dir: String) -> Dictionary:
 	Util.print("item_save", "Saving Tilesets: [color=#fe8019]%s[/color]" % [tileset_names], 1)
 
 	for key in tilesets.keys():
-		var tileset: TileSet = tilesets.get(key)
+		var tileset: LDTKTileSet = tilesets.get(key)
 		if tileset.get_source_count() == 0:
 			continue
 
@@ -314,10 +315,8 @@ static func get_entity_def_tiles(definitions: Dictionary, tilesets: Dictionary) 
 		if (entity.tile == null):
 			continue
 		# Find associated TileSet
-		var texture = FieldUtil.__parse_tile(entity.tile)
+		var texture: AtlasTexture = FieldUtil.__parse_tile(entity.tile)
 		entity.tile = texture
-
-	return definitions
 
 # Collect all layer tileset overrides. Later we'll ensure these sources are included in TileSet resources.
 static func get_tileset_overrides(
