@@ -10,6 +10,12 @@ extends Node2D
 func _init() -> void:
 	child_order_changed.connect(_find_level_children)
 
+func _ready() -> void:
+	LDTK.register_reference(iid, self)
+
+func _exit_tree() -> void:
+	LDTK.unregister_reference(iid, self)
+
 func _find_level_children() -> void:
 	for child in get_children():
 		if child is LDTKLevel:

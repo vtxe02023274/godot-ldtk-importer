@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://c36l6fpttus66"]
+
+[ext_resource type="Script" uid="uid://ds4gnehactbob" path="res://addons/ldtk-importer/src/nodes/placeholder/ldtk-entity.gd" id="1_qxfxw"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gv5l1"]
+light_mode = 1
+
+[node name="LDTK Entity" type="Node2D" unique_id=1356035538]
+z_index = 1
+material = SubResource("CanvasItemMaterial_gv5l1")
+script = ExtResource("1_qxfxw")
+smart_color = Color(1, 0.8, 0, 0.533333)
+
+[node name="Sprite" type="Sprite2D" parent="." unique_id=288183680]
+use_parent_material = true
+
+[node name="Label" type="Label" parent="." unique_id=2073371165]
+use_parent_material = true
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 8
