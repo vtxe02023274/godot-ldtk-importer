@@ -161,13 +161,31 @@ static func create_level(
 	if (Util.options.verbose_output): Util.print("block", level_name, 1)
 	Util.update_instance_reference(level_data.iid, level)
 
-	var neighbours = level_data.__neighbours
-
-	if not Util.options.pack_levels:
-		for neighbour in neighbours:
-			Util.add_unresolved_reference(neighbour, "levelIid", level)
+	# Parse Neighbours
+	var neighbours: Array[LDTKLevelNeighbour] = []
+	for n in level_data.__neighbours:
+		var neighour_ref := LDTKReference.new(n.levelIid, null)
+		var neighbour := LDTKLevelNeighbour.new(neighour_ref)
+		match n.dir:
+			"n": 	neighbour.dir = LDTKLevel.NEIGHBOUR.NORTH
+			"s":	neighbour.dir = LDTKLevel.NEIGHBOUR.SOUTH
+			"e":	neighbour.dir = LDTKLevel.NEIGHBOUR.EAST
+			"w":	neighbour.dir = LDTKLevel.NEIGHBOUR.WEST
+			"nw":	neighbour.dir = LDTKLevel.NEIGHBOUR.NORTHWEST
+			"ne":	neighbour.dir = LDTKLevel.NEIGHBOUR.NORTHEAST
+			"sw":	neighbour.dir = LDTKLevel.NEIGHBOUR.SOUTHWEST
+			"se":	neighbour.dir = LDTKLevel.NEIGHBOUR.SOUTHEAST
+			"<":	neighbour.dir = LDTKLevel.NEIGHBOUR.LOWER
+			">":	neighbour.dir = LDTKLevel.NEIGHBOUR.UPPER
+			"o":	neighbour.dir = LDTKLevel.NEIGHBOUR.OVERLAP
+			_:		neighbour.dir = LDTKLevel.NEIGHBOUR.UNKNOWN
+		neighbours.append(neighbour)
 
 	level.neighbours = neighbours
+
+	# NOTE: We are queuing resolve on a Reference directly, not an Iid string.
+	for neighbour in level.neighbours:
+		Util.add_unresolved_reference(neighbour, "level", level)
 
 	# Create background image
 	if level_data.bgRelPath != null:
@@ -194,8 +212,6 @@ static func create_level(
 		return level
 
 	# Create layers
-	var layers = Layer.create_layers(level_data, layer_instances, definitions)
-	for layer in layers:
-		level.add_child(layer)
+	Layer.add_layers(level, level_data, layer_instances, definitions)
 
 	return level
