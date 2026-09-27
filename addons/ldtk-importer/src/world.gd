@@ -16,10 +16,10 @@ static func create_world(
 	world.iid = iid
 
 	# Update World_Rect
-	var x1 = world.rect.position.x
-	var x2 = world.rect.end.x
-	var y1 = world.rect.position.y
-	var y2 = world.rect.end.y
+	var x1: int = world.rect.position.x
+	var x2: int = world.rect.end.x
+	var y1: int = world.rect.position.y
+	var y2: int = world.rect.end.y
 
 	var worldDepths := {}
 
@@ -33,8 +33,10 @@ static func create_world(
 				worldDepthLayer = LDTKWorldLayer.new()
 				worldDepthLayer.name = "WorldLayer_" + str(z_index)
 				worldDepthLayer.depth = z_index
+
 				world.add_child(worldDepthLayer)
 				worldDepthLayer.set_owner(world)
+
 				worldDepths[z_index] = worldDepthLayer
 			else:
 				worldDepthLayer = worldDepths[z_index]
@@ -65,7 +67,7 @@ static func create_world(
 	Util.timer_finish("World Created", 1)
 
 	# Post-Import
-	if (Util.options.world_post_import):
+	if Util.options.world_post_import:
 		world = PostImport.run_world_post_import(world, Util.options.world_post_import)
 
 	return world

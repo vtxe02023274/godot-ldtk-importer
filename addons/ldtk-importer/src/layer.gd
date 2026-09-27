@@ -1,59 +1,66 @@
 @tool
 
 const Util = preload("util/util.gd")
-const LayerUtil = preload("util/layer-util.gd")
 const FieldUtil = preload("util/field-util.gd")
 const TileUtil = preload("util/tile-util.gd")
 
-# Used to display helpful error messages (which level we are in)
-static var current_level: String = "N/A"
+const EntityPlaceHolder = preload("nodes/placeholder/ldtk-entity.tscn")
 
-static func create_layers(
+# Debug string used to display helpful error messages (which level we are in)
+static var __current_level: String = "N/A"
+
+static func add_layers(
+		level: LDTKLevel,
 		level_data: Dictionary,
 		layer_instances: Array,
 		definitions: Dictionary
-) -> Array:
+) -> void:
 
-	current_level = level_data.identifier
+	__current_level = level_data.identifier
 
 	var layer_nodes := []
-	var layer_index: int = 0
 
 	for layer_instance in layer_instances:
-		var layer_def: Dictionary = definitions.layers[layer_instance.layerDefUid]
+		var layer_def: Dictionary = definitions.layers[int(layer_instance.layerDefUid)]
 		var layer_type: String = layer_instance.__type
+
+		var layer: Node
 
 		match layer_type:
 			"Entities":
-				var layer = create_entity_layer(layer_instance, layer_def, definitions.entities)
-				layer_nodes.push_front(layer)
+				layer = create_entity_layer(level, layer_instance, layer_def, definitions.entities)
 
 			"IntGrid":
 				# Determines if this has an 'AutoLayer' assigned
 				var has_tileset := layer_instance.__tilesetDefUid != null
 
 				if has_tileset:
-					var layer = create_tile_layer(layer_instance, layer_def)
-					layer_nodes.push_front(layer)
+					layer = create_tile_layer(layer_instance, layer_def)
+
 				if (not has_tileset or Util.options.integer_grid_tilesets):
-					var layer = create_intgrid_layer(layer_instance, layer_def)
-					layer_nodes.push_front(layer)
+					layer = create_intgrid_layer(layer_instance, layer_def)
 
 			"Tiles", "AutoLayer":
-				var layer = create_tile_layer(layer_instance, layer_def)
-				layer_nodes.push_front(layer)
+				layer = create_tile_layer(layer_instance, layer_def)
 
 			_:
 				push_warning("[LDtk] Tried importing an unsupported layer type: ", layer_type)
+				continue
 
-	if (Util.options.verbose_output):
-		var layer_names = layer_nodes.map(func(elem): return elem.name)
-		Util.print("item_info", "Created Layers: [color=slategray]%s[/color]" % [layer_names], 2)
-	return layer_nodes
+		level.add_child(layer)
+		Util.recursive_set_owner(layer, level)
+
+	if Util.options.verbose_output:
+		pass
+		#var layer_names = layer_nodes.map(func(elem): return elem.name)
+		#Util.print("item_info", "Created Layers: [color=slategray]%s[/color]" % [layer_names], 2)
+
+	#return layer_nodes
 
 #region Layer Types
 
 static func create_entity_layer(
+		level: LDTKLevel,
 		layer_data: Dictionary,
 		layer_def: Dictionary,
 		entity_defs: Dictionary
@@ -97,7 +104,7 @@ static func create_intgrid_layer(
 ) -> TileMapLayer:
 
 	# Create TileMapLayer
-	var tilemap: TileMapLayer = LayerUtil.create_layer_tilemap(layer_data)
+	var tilemap: TileMapLayer = create_tile_map_layer(layer_data)
 	tilemap.position = layer_def.offset
 
 	# Retrieve IntGrid values - these do not always match their array index
@@ -195,11 +202,13 @@ static func __place_tiles(
 		tilemap: TileMapLayer,
 		tiles: Array,
 		tile_source_id: int,
-		grid_size: Vector2,
-		layer_index: int = 0
+		grid_size: Vector2
 ) -> void:
 
+	if not tilemap.tile_set: return
+
 	var tile_source: TileSetAtlasSource
+
 	if tilemap.tile_set.has_source(tile_source_id):
 		tile_source = tilemap.tile_set.get_source(tile_source_id)
 	else:
@@ -284,7 +293,7 @@ static func __place_overlapping_tile(
 
 	# Create new child if no empty cell (or child) could be found
 	if not empty:
-		tilemap_child = LayerUtil.create_tilemap_child(tilemap)
+		tilemap_child = create_tile_map_layer_child(tilemap)
 		tilemap.add_child(tilemap_child)
 
 	# Set tile

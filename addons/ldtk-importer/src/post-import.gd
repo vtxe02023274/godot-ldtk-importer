@@ -3,7 +3,7 @@
 const Util = preload("util/util.gd")
 
 static func run(element: Variant, script_path: String) -> Variant:
-	var element_type = typeof(element)
+	var element_type: int = typeof(element)
 
 	if not script_path.is_empty():
 		var script = load(script_path)

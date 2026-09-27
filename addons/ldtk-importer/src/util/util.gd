@@ -20,11 +20,11 @@ static var options := {}
 static var entity_mapper: LDTKEntityMapper
 
 static func parse_file(source_file: String) -> Dictionary:
-	var json := FileAccess.open(source_file, FileAccess.READ)
+	var json = FileAccess.open(source_file, FileAccess.READ)
 	if json == null:
 		push_error("\nFailed to open file: ", source_file)
 		return {}
-	var data := JSON.parse_string(json.get_as_text())
+	var data = JSON.parse_string(json.get_as_text())
 	return data
 
 static func check_version(version: String, latest_version: String) -> bool:
@@ -75,7 +75,7 @@ static func timer_start(category: int = 0) -> int:
 	time_history.append({"category": category, "time": t, "init": t})
 	return t
 
-static func timer_finish(message: String, indent: int = 0, doPrint: bool = true) -> int:
+static func timer_finish(message: String, indent: int = 0, doPrint := true) -> int:
 	if time_history.size() == 0:
 		push_error("Unbalanced DebugTime stack")
 	var last: Dictionary = time_history.pop_back()
@@ -102,7 +102,7 @@ static func timer_reset() -> void:
 
 #region Debug Output
 
-const PRINT_SNIPPET := {
+const PRINT_SNIPPET: Dictionary[String, String] = {
 	"import_start": "[bgcolor=#ffcc00][color=black][LDTK][/color][/bgcolor][color=#ffcc00] Start Import: [color=#fe8019][i]'%s'[/i][/color]",
 	"import_finish": "[bgcolor=#ffcc00][color=black][LDTK][/color][/bgcolor][color=#ffcc00] Finished Import. [color=slategray](Total Time: %sms)[/color]",
 	"item_ok" : "[color=#b8bb26]• %s ✔[/color]",

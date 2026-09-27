@@ -7,10 +7,7 @@ const FieldUtil = preload("util/field-util.gd")
 const PostImport = preload("post-import.gd")
 
 enum AtlasTextureType {CompressedTexture2D, CanvasTexture}
-enum TilesetSaveExtension {
-	RES,
-	TRES,
-}
+enum TilesetSaveExtension {RES,TRES}
 
 static func get_tileset_save_extension() -> String:
 	return TilesetSaveExtension.keys()[Util.options.tileset_save_extension].to_lower()
@@ -29,7 +26,7 @@ static func build_tilesets(
 
 	tilesets = layer_def_uids.reduce(
 		func(accum: Dictionary, current: float):
-			var layer_def = definitions.layers[current]
+			var layer_def = definitions.layers[int(current)]
 			var grid_size: int = layer_def.gridSize
 
 			if not accum.has(grid_size):
@@ -38,7 +35,7 @@ static func build_tilesets(
 			# Create TileSetSource for IntGrids
 			if (Util.options.integer_grid_tilesets):
 				if layer_def.type == "IntGrid" and layer_def.intGridValues.size() > 0:
-					var intgrid_uid = layer_def.uid
+					var intgrid_uid = int(layer_def.uid)
 					var intgrid_source = create_intgrid_source(layer_def)
 					tileset_sources[intgrid_uid] = intgrid_source
 					Util.add_tileset_reference(intgrid_uid, intgrid_source)
@@ -114,7 +111,7 @@ static func get_tileset(tile_size: int,base_dir: String) -> TileSet:
 		get_tileset_save_extension()
 	]
 
-	if not (Util.options.force_tileset_reimport):
+	if not Util.options.force_tileset_reimport:
 		if ResourceLoader.exists(path):
 			var tileset = ResourceLoader.load(path)
 			if tileset is TileSet:
@@ -125,7 +122,7 @@ static func get_tileset(tile_size: int,base_dir: String) -> TileSet:
 	tileset.resource_name = tileset_name
 	tileset.tile_size = Vector2i(tile_size, tile_size)
 
-	if (Util.options.verbose_output):
+	if Util.options.verbose_output:
 		Util.print("item_info", "Created new TileSet: \"%s\"" % [tileset_name], 1)
 
 	return tileset
@@ -205,8 +202,7 @@ static func add_tileset_custom_data(
 		grid_w: int
 ) -> void:
 
-	if not definition.has("enumTags"):
-		return
+	if not definition.has("enumTags"): return
 
 	var customData: Array = definition.customData
 	var custom_name: String = "LDTK Custom"
@@ -312,8 +308,7 @@ static func save_tilesets(tilesets: Dictionary, base_dir: String) -> Dictionary:
 
 	return gen_files
 
-static func get_entity_def_tiles(definitions: Dictionary, tilesets: Dictionary) -> Dictionary:
-	# TODO: Loop through EntityDefs, and turn 'Tile' into an Image.
+static func get_entity_def_tiles(definitions: Dictionary, tilesets: Dictionary) -> void:
 	for def in definitions.entities:
 		var entity: Dictionary = definitions.entities[def]
 		if (entity.tile == null):
@@ -332,11 +327,14 @@ static func get_tileset_overrides(
 ) -> Dictionary:
 	var overrides := {}
 	for level_index in range(world_data.levels.size()):
-		var level_data
-		level_data = world_data.levels[level_index]
+		var level_data: Dictionary
 
 		if external_levels:
 			level_data = LevelUtil.get_external_level(level_data, base_dir)
+		else:
+			level_data = world_data.levels[level_index]
+
+		if not level_data.layerInstances: continue
 
 		for layer in level_data.layerInstances:
 			if layer.overrideTilesetUid == null:

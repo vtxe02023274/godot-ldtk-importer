@@ -12,7 +12,7 @@ static func build_levels(
 		world_data: Dictionary,
 		definitions: Dictionary,
 		base_dir: String,
-		external_levels: bool
+		use_external_levels: bool
 ) -> Array[LDTKLevel]:
 
 	Util.timer_start(Util.DebugTime.GENERAL)
@@ -41,23 +41,26 @@ static func build_levels(
 			printerr("World Layout not supported: ", world_data.worldLayout)
 
 	# Create levels
+	var entity_post_import = Util.options.entities_post_import
+	var level_post_import = Util.options.level_post_import
+
 	for level_index in range(world_data.levels.size()):
 		Util.timer_start(Util.DebugTime.GENERAL)
-		var level_data
-		var position: Vector2i = level_positions[level_index]
-		level_data = world_data.levels[level_index]
+		var level_data: Dictionary
 
-		if external_levels:
+		if use_external_levels:
 			level_data = LevelUtil.get_external_level(level_data, base_dir)
+		else:
+			level_data = world_data.levels[level_index]
 
-		var level = create_level(level_data, position, definitions)
+		var level = create_level(level_data, level_positions[level_index], definitions)
 		Util.timer_finish("Built Level", 2)
 
-		if (Util.options.entities_post_import):
-			level = PostImport.run_entity_post_import(level, Util.options.entities_post_import)
+		if entity_post_import:
+			level = PostImport.run_entity_post_import(level, entity_post_import)
 
-		if (Util.options.level_post_import):
-			level = PostImport.run_level_post_import(level, Util.options.level_post_import)
+		if level_post_import:
+			level = PostImport.run_level_post_import(level, level_post_import)
 
 		levels.append(level)
 
@@ -97,17 +100,17 @@ static func setup_background_sprite(
 ) -> void:
 	var mode := get_background_mode(bg_mode)
 	var level_size := Vector2(level.size)
-	
+
 	# Extract positioning data
 	var pos: Array = bg_data.topLeftPx
 	var ldtk_scale: Array = bg_data.scale
 	var crop: Array = bg_data.cropRect
-	
+
 	# Base setup
 	sprite.centered = false
 	sprite.texture_repeat = CanvasItem.TEXTURE_REPEAT_DISABLED
 	sprite.region_enabled = true
-	
+
 	match mode:
 		BackgroundMode.REPEAT:
 			sprite.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
@@ -115,26 +118,26 @@ static func setup_background_sprite(
 			sprite.position = Vector2.ZERO
 			# Use level dimensions for region rect in repeat mode
 			sprite.region_rect = Rect2(Vector2.ZERO, level_size)
-			
+
 		_:  # All other modes
 			# Apply the initial position and crop from LDTK
 			sprite.position = Vector2(pos[0], pos[1])
 			sprite.region_rect = Rect2(crop[0], crop[1], crop[2], crop[3])
-			
+
 			match mode:
 				BackgroundMode.UNSCALED:
 					sprite.scale = Vector2(ldtk_scale[0], ldtk_scale[1])
-					
+
 				BackgroundMode.FIT_INSIDE:
 					var scale := level_size.x / texture_size.x
 					sprite.scale = Vector2(scale, scale)
-					
+
 				BackgroundMode.COVER:
 					var scale_x := level_size.x / texture_size.x
 					var scale_y := level_size.y / texture_size.y
 					var scale := maxf(scale_x, scale_y)
 					sprite.scale = Vector2(scale, scale)
-					
+
 				BackgroundMode.COVER_DIRTY:
 					sprite.scale = Vector2(
 						level_size.x / texture_size.x,

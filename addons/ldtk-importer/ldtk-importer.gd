@@ -4,16 +4,13 @@ extends EditorImportPlugin
 const LDTK_LATEST_VERSION = "1.5.3"
 
 enum Presets {DEFAULT}
-enum LevelSaveExtensions {
-	SCN,
-	TSCN
-}
+enum LevelSaveExtensions {SCN, TSCN}
 
 const Util = preload("src/util/util.gd")
 const World = preload("src/world.gd")
 const Level = preload("src/level.gd")
 const Tileset = preload("src/tileset.gd")
-const DefinitionUtil = preload("src/util/definition_util.gd")
+const DefinitionUtil = preload("src/util/definition-util.gd")
 
 #region EditorImportPlugin Overrides
 
@@ -79,7 +76,7 @@ func _get_import_options(path, index):
 		{
 			# Define LDTKLevels save extension.
 			"name": "level_save_extension",
-			"default_value": 0,
+			"default_value": 1,
 			"property_hint": PROPERTY_HINT_ENUM,
 			"hint_string": "scn,tscn",
 		},
@@ -112,7 +109,7 @@ func _get_import_options(path, index):
 		{
 			# Define Godot tileset save extension.
 			"name": "tileset_save_extension",
-			"default_value": 0,
+			"default_value": 1,
 			"property_hint": PROPERTY_HINT_ENUM,
 			"hint_string": "res,tres",
 		},
@@ -193,6 +190,8 @@ func _import(
 	# Add options to static var in "Util", accessible from any script.
 	Util.options = options
 
+	var verbose: bool = Util.options.verbose_output
+
 	# Parse source_file
 	var base_dir := source_file.get_base_dir() + "/"
 	var file_name := source_file.get_file()
@@ -200,7 +199,7 @@ func _import(
 
 	Util.timer_start(Util.DebugTime.LOAD)
 	var world_data := Util.parse_file(source_file)
-	var external_levels: bool = world_data.externalLevels
+	var use_external_levels: bool = world_data.externalLevels
 	Util.timer_finish("File parsed")
 
 	# Check version
@@ -211,7 +210,8 @@ func _import(
 
 	Util.timer_start(Util.DebugTime.GENERAL)
 	var definitions := DefinitionUtil.build_definitions(world_data)
-	var tileset_overrides := Tileset.get_tileset_overrides(world_data, base_dir, external_levels)
+	var tileset_overrides := Tileset.get_tileset_overrides(world_data, base_dir, use_external_levels)
+
 	# Update EntityMapper
 	Util.entity_mapper = null
 	if options.entity_mapper:
@@ -228,32 +228,30 @@ func _import(
 	Util.timer_finish("Definitions Created")
 
 	# Build Tilesets and save as Resources
-	if Util.options.verbose_output: Util.print("block", "Tilesets")
+	if verbose: Util.print("block", "Tilesets")
 	var tileset_paths := Tileset.build_tilesets(definitions, base_dir, tileset_overrides)
 	gen_files.append_array(tileset_paths)
 
 	# Fetch EntityDef Tile textures
 	Tileset.get_entity_def_tiles(definitions, Util.tilesets)
 
-	# Detect Multi-Worlds
+	var world: LDTKWorld
 	var world_iid: String = world_data.iid
 
-	var world: LDTKWorld
+	# Detect Multi-Worlds
 	if world_data.worldLayout == null:
 		var world_nodes: Array[LDTKWorld] = []
 		var world_instances: Array = world_data.worlds
 		# Build each world instance
 		for world_instance in world_instances:
-			var world_instance_name: String = world_instance.identifier
-			var world_instance_iid: String = world_instance.iid
-			var levels := Level.build_levels(world_instance, definitions, base_dir, external_levels)
-			var world_node := World.create_world(world_instance_name, world_instance_iid, levels, base_dir)
+			var levels := Level.build_levels(world_instance, definitions, base_dir, use_external_levels)
+			var world_node := World.create_world(world_instance.identifier, world_instance.iid, levels, base_dir)
 			world_nodes.append(world_node)
 
 		world = World.create_multi_world(world_name, world_iid, world_nodes)
 	else:
-		if Util.options.verbose_output: Util.print("block", "Levels")
-		var levels := Level.build_levels(world_data, definitions, base_dir, external_levels)
+		if verbose: Util.print("block", "Levels")
+		var levels := Level.build_levels(world_data, definitions, base_dir, use_external_levels)
 
 		# Save Levels (after Level Post-Import)
 		if (Util.options.pack_levels):
@@ -263,32 +261,38 @@ func _import(
 				directory.make_dir(levels_path)
 
 			# Resolve Refs + Cleanup Resolvers. We don't want to save 'NodePathResolver' in the Level scene.
-			#if (Util.options.verbose_output): Util.print("block", "References")
-			if (Util.options.verbose_output): Util.print("block", "Save Levels")
-			Util.handle_references()
+			#if (verbose): Util.print("block", "References")
+
+			# Build a dict of levels to predicted save paths.
+			var owner_paths: Dictionary[Node, String] = {}
+			for level in levels:
+				var path := "%s%s.%s" % [levels_path, level.name, _get_save_extension()]
+				owner_paths[level] = path
+			Util.handle_references(owner_paths)
+
+			if verbose: Util.print("block", "Save Levels")
 			var packed_levels = save_levels(levels, levels_path, gen_files)
 
-			if (Util.options.verbose_output): Util.print("block", "Save World")
+			if verbose: Util.print("block", "Save World")
 			world = World.create_world(world_name, world_iid, packed_levels, base_dir)
 		else:
-			if (Util.options.verbose_output): Util.print("block", "Save World")
+			if verbose: Util.print("block", "Save World")
 			world = World.create_world(world_name, world_iid, levels, base_dir)
-
-			Util.handle_references()
+			Util.handle_references({})
 
 	# Save World as PackedScene
 	Util.timer_start(Util.DebugTime.SAVE)
 	var err = save_world(world, save_path, gen_files)
 	Util.timer_finish("World Saved", 1)
 
-	if Util.options.verbose_output: Util.print("block", "Results")
-
 	Util.timer_finish("Completed.")
-
 	var total_time: int = Util.DebugTime.get_total_time()
-	var result_message: String = Util.DebugTime.get_result()
 
-	if Util.options.verbose_output: Util.print("item_info", result_message)
+	if verbose:
+		Util.print("block", "Results")
+		var result_message: String = Util.DebugTime.get_result()
+		Util.print("item_info", result_message)
+
 	Util.print("import_finish", str(total_time))
 
 	return err
@@ -319,8 +323,7 @@ func save_levels(
 	Util.timer_start(Util.DebugTime.SAVE)
 	var packed_levels: Array[LDTKLevel] = []
 
-
-	var level_names := levels.map(func(elem): return elem.name)
+	var level_names: Array = levels.map(func(elem: LDTKLevel): return elem.name)
 	Util.print("item_save", "Saving Levels: [color=#fe8019]%s[/color]" % [level_names], 1)
 
 	for level in levels:
@@ -342,8 +345,10 @@ func save_level(
 	packed_level.pack(level)
 	var level_path = "%s%s.%s" % [save_path, level.name, _get_save_extension()]
 
-	var err = ResourceSaver.save(packed_level, level_path)
+	var err := ResourceSaver.save(packed_level, level_path)
 	if err == OK:
 		gen_files.append(level_path)
+	else:
+		push_error("Error saving packed level")
 
 	return level_path
