@@ -1,0 +1,207 @@
+[gd_scene format=4 uid="uid://cpoiwgvi4v1ew"]
+
+[ext_resource type="Script" uid="uid://du4xukr3a505a" path="res://addons/ldtk-importer/src/nodes/ldtk-level.gd" id="1_xprlh"]
+[ext_resource type="Script" uid="uid://cmreq53ia0jip" path="res://addons/ldtk-importer/src/resources/ldtk-level-neighbour.gd" id="2_3govk"]
+[ext_resource type="Script" uid="uid://cd7osjuayh4at" path="res://addons/ldtk-importer/src/resources/ldtk-reference.gd" id="3_pai5q"]
+[ext_resource type="TileSet" uid="uid://cxnl5l6fo6dnv" path="res://examples/gridvania/tilesets/tileset_16px.tres" id="4_b2fff"]
+[ext_resource type="Script" uid="uid://oc3rr22vfpnk" path="res://addons/ldtk-importer/src/nodes/ldtk-entity-layer.gd" id="5_mwg25"]
+
+[sub_resource type="Resource" id="Resource_7a254"]
+script = ExtResource("3_pai5q")
+iid = "c2807ea0-3b70-11ee-8b24-0d139bd9fa43"
+sceneFile = "res://examples/gridvania/levels/Level_0.tscn"
+
+[sub_resource type="Resource" id="Resource_xprlh"]
+script = ExtResource("2_3govk")
+dir = 8
+level = SubResource("Resource_7a254")
+
+[sub_resource type="Resource" id="Resource_f4y20"]
+script = ExtResource("3_pai5q")
+iid = "c3dcff30-3b70-11ee-ba64-f5e46a8086a7"
+sceneFile = "res://examples/gridvania/levels/Level_1.tscn"
+
+[sub_resource type="Resource" id="Resource_3govk"]
+script = ExtResource("2_3govk")
+dir = 8
+level = SubResource("Resource_f4y20")
+
+[node name="Level_5" type="Node2D" unique_id=4288221]
+z_index = -1
+script = ExtResource("1_xprlh")
+iid = "230a8010-3b70-11ee-8dd0-8b12be237f4a"
+world_position = Vector2(512, 256)
+size = Vector2i(512, 256)
+fields = {
+"LevelBoolean": false,
+"LevelColor": Color(1, 0.8, 0, 1),
+"LevelInteger": 0
+}
+neighbours = Array[ExtResource("2_3govk")]([SubResource("Resource_xprlh"), SubResource("Resource_3govk")])
+bg_color = Color(0.4117647, 0.41568628, 0.4745098, 1)
+
+[node name="Tiles" type="TileMapLayer" parent="." unique_id=1962473471]
+tile_set = ExtResource("4_b2fff")
+
+[node name="Entities" type="Node2D" parent="." unique_id=1993817529]
+script = ExtResource("5_mwg25")
+iid = "230a8012-3b70-11ee-8dd0-1988400fc32b"
+definition = {
+"gridSize": 16.0,
+"identifier": "Entities",
+"intGridValues": [],
+"offset": Vector2i(0, 0),
+"parallax": Vector2(0, 0),
+"parallaxScaling": true,
+"type": "Entities",
+"uid": 2
+}
+entity_definitions = {
+6: {
+"color": Color(0.17254902, 0.9098039, 0.9607843, 1),
+"field_defs": {
+7: {
+"identifier": "Integer",
+"type": "Int"
+},
+8: {
+"identifier": "Float",
+"type": "Float"
+},
+9: {
+"identifier": "Boolean",
+"type": "Bool"
+},
+10: {
+"identifier": "String",
+"type": "String"
+},
+11: {
+"identifier": "Multilines",
+"type": "String"
+},
+12: {
+"identifier": "Color",
+"type": "Color"
+},
+13: {
+"identifier": "Enum",
+"type": "LocalEnum.Symbol"
+},
+14: {
+"identifier": "File_path",
+"type": "FilePath"
+},
+15: {
+"identifier": "Tile",
+"type": "Tile"
+},
+16: {
+"identifier": "Entity_ref",
+"type": "EntityRef"
+},
+17: {
+"identifier": "Point",
+"type": "Point"
+}
+},
+"hollow": true,
+"identifier": "EntityFieldTest",
+"renderMode": "Ellipse",
+"tags": [],
+"tile": null,
+"uid": 6
+},
+48: {
+"color": Color(0.3882353, 0.78039217, 0.3019608, 1),
+"field_defs": {
+49: {
+"identifier": "IntegerArray",
+"type": "Array<Int>"
+},
+50: {
+"identifier": "FloatArray",
+"type": "Array<Float>"
+},
+51: {
+"identifier": "BooleanArray",
+"type": "Array<Bool>"
+},
+52: {
+"identifier": "StringArray",
+"type": "Array<String>"
+},
+53: {
+"identifier": "MultilinesArray",
+"type": "Array<String>"
+},
+54: {
+"identifier": "ColorArray",
+"type": "Array<Color>"
+},
+55: {
+"identifier": "EnumArray",
+"type": "Array<LocalEnum.Symbol>"
+},
+56: {
+"identifier": "File_pathArray",
+"type": "Array<FilePath>"
+},
+57: {
+"identifier": "TileArray",
+"type": "Array<Tile>"
+},
+58: {
+"identifier": "EntityRefArray",
+"type": "Array<EntityRef>"
+},
+59: {
+"identifier": "PointArray",
+"type": "Array<Point>"
+},
+64: {
+"identifier": "Enum2Array",
+"type": "Array<LocalEnum.Letter>"
+}
+},
+"hollow": false,
+"identifier": "EntityArrayFieldTest",
+"renderMode": "Rectangle",
+"tags": [],
+"tile": null,
+"uid": 48
+},
+65: {
+"color": Color(0.3882353, 0.78039217, 0.3019608, 1),
+"field_defs": {},
+"hollow": false,
+"identifier": "Cross",
+"renderMode": "Cross",
+"tags": [],
+"tile": null,
+"uid": 65
+},
+73: {
+"color": Color(0.74509805, 0.2901961, 0.18431373, 1),
+"field_defs": {
+74: {
+"identifier": "Color",
+"type": "Color"
+},
+75: {
+"identifier": "Energy",
+"type": "Float"
+}
+},
+"hollow": true,
+"identifier": "LightTest",
+"renderMode": "Ellipse",
+"tags": [],
+"tile": null,
+"uid": 73
+}
+}
+
+[node name="IntGrid" type="TileMapLayer" parent="." unique_id=2001071267]
+tile_map_data = PackedByteArray("AAACAAIABQADAAMAADAdAAIABQADAAMAACACAA0ABQADAAMAABAdAA0ABQADAAMAAAABAAIABQADAAIAAAAeAAIABQADAAIAABABAAMABQADAAIAAAAeAAMABQADAAIAABABAAYABQADAAIAAAABAAcABQADAAIAAAACAAcABQADAAIAABABAAgABQADAAIAAAACAAgABQADAAIAABABAAkABQADAAIAAAAeAAkABQADAAIAABAeAAoABQADAAIAABABAAwABQADAAIAAAAeAAwABQADAAIAABABAA0ABQADAAIAAAAeAA0ABQADAAIAABACAAEABQACAAIAAAADAAEABQACAAIAAAAMAAEABQACAAIAAAANAAEABQACAAIAAAAOAAEABQACAAIAAAAPAAEABQACAAIAAAAQAAEABQACAAIAAAARAAEABQACAAIAAAASAAEABQACAAIAAAATAAEABQACAAIAAAAUAAEABQACAAIAAAAVAAEABQACAAIAAAAWAAEABQACAAIAAAAXAAEABQACAAIAAAAcAAEABQACAAIAAAAdAAEABQACAAIAAAANAAIABQACAAIAACAOAAIABQACAAIAACAPAAIABQACAAIAACAQAAIABQACAAIAACARAAIABQACAAIAACASAAIABQACAAIAACATAAIABQACAAIAACAUAAIABQACAAIAACAVAAIABQACAAIAACAWAAIABQACAAIAACANAA0ABQACAAIAAAAOAA0ABQACAAIAAAAPAA0ABQACAAIAAAAQAA0ABQACAAIAAAARAA0ABQACAAIAAAASAA0ABQACAAIAAAATAA0ABQACAAIAAAAUAA0ABQACAAIAAAAVAA0ABQACAAIAAAACAA4ABQACAAIAACADAA4ABQACAAIAACAMAA4ABQACAAIAACANAA4ABQACAAIAACAOAA4ABQACAAIAACAPAA4ABQACAAIAACAQAA4ABQACAAIAACARAA4ABQACAAIAACASAA4ABQACAAIAACATAA4ABQACAAIAACAUAA4ABQACAAIAACAVAA4ABQACAAIAACAWAA4ABQACAAIAACAcAA4ABQACAAIAACAdAA4ABQACAAIAACABAAEABQABAAEAAAAeAAEABQABAAEAABADAAIABQABAAEAADAMAAIABQABAAEAACAXAAIABQABAAEAADAcAAIABQABAAEAACACAAMABQABAAEAADAdAAMABQABAAEAACACAAYABQABAAEAABACAAkABQABAAEAADAdAAkABQABAAEAAAAdAAoABQABAAEAACACAAwABQABAAEAABAdAAwABQABAAEAAAADAA0ABQABAAEAABAMAA0ABQABAAEAAAAWAA0ABQABAAEAABAcAA0ABQABAAEAAAABAA4ABQABAAEAACAeAA4ABQABAAEAADABAAQABQAAAAEAAAAeAAQABQAAAAEAAAABAAUABQAAAAEAAAAeAAUABQAAAAEAAAAeAAYABQAAAAEAAAAeAAcABQAAAAEAAAAeAAgABQAAAAEAAAABAAoABQAAAAEAAAABAAsABQAAAAEAAAAeAAsABQAAAAEAAAAEAAEABQAEAAAAAAAFAAEABQAEAAAAAAAGAAEABQAEAAAAAAAHAAEABQAEAAAAAAAIAAEABQAEAAAAAAAJAAEABQAEAAAAAAAKAAEABQAEAAAAAAALAAEABQAEAAAAAAAYAAEABQAEAAAAAAAZAAEABQAEAAAAAAAaAAEABQAEAAAAAAAbAAEABQAEAAAAAAAEAA4ABQAEAAAAAAAFAA4ABQAEAAAAAAAGAA4ABQAEAAAAAAAHAA4ABQAEAAAAAAAIAA4ABQAEAAAAAAAJAA4ABQAEAAAAAAAKAA4ABQAEAAAAAAALAA4ABQAEAAAAAAAXAA4ABQAEAAAAAAAYAA4ABQAEAAAAAAAZAA4ABQAEAAAAAAAaAA4ABQAEAAAAAAAbAA4ABQAEAAAAAAA=")
+tile_set = ExtResource("4_b2fff")

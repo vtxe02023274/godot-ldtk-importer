@@ -1,0 +1,384 @@
+[gd_scene format=4 uid="uid://d2h28rd5vgqgo"]
+
+[ext_resource type="Script" uid="uid://du4xukr3a505a" path="res://addons/ldtk-importer/src/nodes/ldtk-level.gd" id="1_68rdw"]
+[ext_resource type="Script" uid="uid://cmreq53ia0jip" path="res://addons/ldtk-importer/src/resources/ldtk-level-neighbour.gd" id="2_ngvrp"]
+[ext_resource type="Script" uid="uid://cd7osjuayh4at" path="res://addons/ldtk-importer/src/resources/ldtk-reference.gd" id="3_etrvj"]
+[ext_resource type="TileSet" uid="uid://cxnl5l6fo6dnv" path="res://examples/gridvania/tilesets/tileset_16px.tres" id="4_ube0x"]
+[ext_resource type="Script" uid="uid://oc3rr22vfpnk" path="res://addons/ldtk-importer/src/nodes/ldtk-entity-layer.gd" id="5_ktn73"]
+[ext_resource type="Texture2D" uid="uid://cc1reqexc5a02" path="res://examples/gridvania/tilesets/tileset_basic.png" id="6_p2vyq"]
+[ext_resource type="PackedScene" uid="uid://c36l6fpttus66" path="res://addons/ldtk-importer/src/nodes/placeholder/ldtk-entity.tscn" id="7_qvern"]
+[ext_resource type="Script" uid="uid://ds4gnehactbob" path="res://addons/ldtk-importer/src/nodes/placeholder/ldtk-entity.gd" id="8_fgfqb"]
+[ext_resource type="PackedScene" uid="uid://dispmukeuhra8" path="res://examples/gridvania/light-test.tscn" id="9_paw1q"]
+
+[sub_resource type="Resource" id="Resource_7a254"]
+script = ExtResource("3_etrvj")
+iid = "c2807ea0-3b70-11ee-8b24-0d139bd9fa43"
+sceneFile = "res://examples/gridvania/levels/Level_0.tscn"
+
+[sub_resource type="Resource" id="Resource_ktn73"]
+script = ExtResource("2_ngvrp")
+level = SubResource("Resource_7a254")
+
+[sub_resource type="Resource" id="Resource_e2yth"]
+script = ExtResource("3_etrvj")
+iid = "9df499d0-3b70-11ee-ba64-71a08bd0ec60"
+sceneFile = "res://examples/gridvania/levels/Level_4.tscn"
+
+[sub_resource type="Resource" id="Resource_p2vyq"]
+script = ExtResource("2_ngvrp")
+dir = 2
+level = SubResource("Resource_e2yth")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_b7km8"]
+diffuse_texture = ExtResource("6_p2vyq")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qvern"]
+atlas = SubResource("CanvasTexture_b7km8")
+region = Rect2(96, 96, 16, 16)
+
+[sub_resource type="Resource" id="Resource_fgfqb"]
+script = ExtResource("3_etrvj")
+iid = "7885aa30-3b70-11ee-ba64-3d1a87af358c"
+sceneFile = "res://examples/gridvania/levels/Level_1.tscn"
+scenePath = NodePath("Entities/EntityFieldTest")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_paw1q"]
+atlas = SubResource("CanvasTexture_b7km8")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="Resource" id="Resource_03t4u"]
+script = ExtResource("3_etrvj")
+iid = "6e9e23e0-73f0-11ef-a4d8-97926434b233"
+sceneFile = "res://examples/gridvania/levels/Level_0.tscn"
+scenePath = NodePath("Entities/EntityFieldTest")
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gv5l1"]
+light_mode = 1
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_algar"]
+diffuse_texture = ExtResource("6_p2vyq")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ne37w"]
+atlas = SubResource("CanvasTexture_algar")
+region = Rect2(96, 96, 16, 16)
+
+[sub_resource type="Gradient" id="Gradient_pic0t"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_cc7nn"]
+gradient = SubResource("Gradient_pic0t")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0, 0.5)
+metadata/_snap_enabled = true
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_5yyx8"]
+diffuse_texture = ExtResource("6_p2vyq")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o3yfp"]
+atlas = SubResource("CanvasTexture_5yyx8")
+region = Rect2(112, 0, 16, 16)
+
+[node name="Level_2" type="Node2D" unique_id=1821005175]
+script = ExtResource("1_68rdw")
+iid = "c8584e20-3b70-11ee-ba64-678d567342c5"
+world_position = Vector2(0, 512)
+size = Vector2i(512, 256)
+fields = {
+"LevelBoolean": false,
+"LevelColor": Color(1, 0.8, 0, 1),
+"LevelInteger": 0
+}
+neighbours = Array[ExtResource("2_ngvrp")]([SubResource("Resource_ktn73"), SubResource("Resource_p2vyq")])
+bg_color = Color(0.4117647, 0.41568628, 0.4745098, 1)
+
+[node name="Tiles" type="TileMapLayer" parent="." unique_id=170173310]
+tile_set = ExtResource("4_ube0x")
+
+[node name="Entities" type="Node2D" parent="." unique_id=1648606072]
+script = ExtResource("5_ktn73")
+iid = "c8584e22-3b70-11ee-ba64-1f0185d6b807"
+definition = {
+"gridSize": 16.0,
+"identifier": "Entities",
+"intGridValues": [],
+"offset": Vector2i(0, 0),
+"parallax": Vector2(0, 0),
+"parallaxScaling": true,
+"type": "Entities",
+"uid": 2
+}
+entities = [{
+"defUid": 6,
+"fields": {
+"Boolean": false,
+"Color": Color(0.8, 1, 0, 1),
+"Entity_ref": SubResource("Resource_fgfqb"),
+"Enum": "Symbol.Gamma",
+"File_path": null,
+"Float": 8.9,
+"Integer": 67,
+"Multilines": "Wow!
+I can store multiple lines of text.
+This could be used for dialogue!",
+"Point": Vector2i(14, 10),
+"String": "A String",
+"Tile": SubResource("AtlasTexture_qvern")
+},
+"identifier": "EntityFieldTest",
+"iid": "75dbe6f0-3b70-11ee-ba64-8f0b2f3a61af",
+"position": Vector2i(376, 168),
+"pxSize": Vector2i(48, 48),
+"smart_color": Color(0.17254902, 0.9098039, 0.9607843, 1)
+}, {
+"defUid": 65,
+"identifier": "Cross",
+"iid": "86aa9350-3b70-11ee-ba64-032ce5929eff",
+"position": Vector2i(80, 160),
+"pxSize": Vector2i(32, 32),
+"smart_color": Color(0.3882353, 0.78039217, 0.3019608, 1)
+}, {
+"defUid": 73,
+"fields": {
+"Color": Color(1, 1, 1, 1),
+"Energy": 1.0
+},
+"identifier": "LightTest",
+"iid": "6a2caa00-3b70-11ee-ba64-a7a01bf91fe2",
+"position": Vector2i(360, 56),
+"pxSize": Vector2i(128, 128),
+"smart_color": Color(1, 1, 1, 1)
+}, {
+"defUid": 6,
+"fields": {
+"Boolean": false,
+"Color": Color(1, 1, 1, 1),
+"Entity_ref": SubResource("Resource_03t4u"),
+"Enum": "Symbol.Alpha",
+"File_path": null,
+"Float": 0.0,
+"Integer": 0,
+"Multilines": null,
+"Point": null,
+"String": null,
+"Tile": SubResource("AtlasTexture_paw1q")
+},
+"identifier": "EntityFieldTest",
+"iid": "792e4d80-73f0-11ef-a4d8-d3dad3432b64",
+"position": Vector2i(376, 168),
+"pxSize": Vector2i(48, 48),
+"smart_color": Color(0.17254902, 0.9098039, 0.9607843, 1)
+}]
+entity_definitions = {
+6: {
+"color": Color(0.17254902, 0.9098039, 0.9607843, 1),
+"field_defs": {
+7: {
+"identifier": "Integer",
+"type": "Int"
+},
+8: {
+"identifier": "Float",
+"type": "Float"
+},
+9: {
+"identifier": "Boolean",
+"type": "Bool"
+},
+10: {
+"identifier": "String",
+"type": "String"
+},
+11: {
+"identifier": "Multilines",
+"type": "String"
+},
+12: {
+"identifier": "Color",
+"type": "Color"
+},
+13: {
+"identifier": "Enum",
+"type": "LocalEnum.Symbol"
+},
+14: {
+"identifier": "File_path",
+"type": "FilePath"
+},
+15: {
+"identifier": "Tile",
+"type": "Tile"
+},
+16: {
+"identifier": "Entity_ref",
+"type": "EntityRef"
+},
+17: {
+"identifier": "Point",
+"type": "Point"
+}
+},
+"hollow": true,
+"identifier": "EntityFieldTest",
+"renderMode": "Ellipse",
+"tags": [],
+"tile": null,
+"uid": 6
+},
+48: {
+"color": Color(0.3882353, 0.78039217, 0.3019608, 1),
+"field_defs": {
+49: {
+"identifier": "IntegerArray",
+"type": "Array<Int>"
+},
+50: {
+"identifier": "FloatArray",
+"type": "Array<Float>"
+},
+51: {
+"identifier": "BooleanArray",
+"type": "Array<Bool>"
+},
+52: {
+"identifier": "StringArray",
+"type": "Array<String>"
+},
+53: {
+"identifier": "MultilinesArray",
+"type": "Array<String>"
+},
+54: {
+"identifier": "ColorArray",
+"type": "Array<Color>"
+},
+55: {
+"identifier": "EnumArray",
+"type": "Array<LocalEnum.Symbol>"
+},
+56: {
+"identifier": "File_pathArray",
+"type": "Array<FilePath>"
+},
+57: {
+"identifier": "TileArray",
+"type": "Array<Tile>"
+},
+58: {
+"identifier": "EntityRefArray",
+"type": "Array<EntityRef>"
+},
+59: {
+"identifier": "PointArray",
+"type": "Array<Point>"
+},
+64: {
+"identifier": "Enum2Array",
+"type": "Array<LocalEnum.Letter>"
+}
+},
+"hollow": false,
+"identifier": "EntityArrayFieldTest",
+"renderMode": "Rectangle",
+"tags": [],
+"tile": null,
+"uid": 48
+},
+65: {
+"color": Color(0.3882353, 0.78039217, 0.3019608, 1),
+"field_defs": {},
+"hollow": false,
+"identifier": "Cross",
+"renderMode": "Cross",
+"tags": [],
+"tile": null,
+"uid": 65
+},
+73: {
+"color": Color(0.74509805, 0.2901961, 0.18431373, 1),
+"field_defs": {
+74: {
+"identifier": "Color",
+"type": "Color"
+},
+75: {
+"identifier": "Energy",
+"type": "Float"
+}
+},
+"hollow": true,
+"identifier": "LightTest",
+"renderMode": "Ellipse",
+"tags": [],
+"tile": null,
+"uid": 73
+}
+}
+
+[node name="EntityFieldTest" type="Node2D" parent="Entities" unique_id=1356035538 instance=ExtResource("7_qvern")]
+material = SubResource("CanvasItemMaterial_gv5l1")
+position = Vector2(376, 168)
+script = ExtResource("8_fgfqb")
+identifier = "EntityFieldTest"
+iid = "75dbe6f0-3b70-11ee-ba64-8f0b2f3a61af"
+defUid = 6
+smart_color = Color(0.17254902, 0.9098039, 0.9607843, 1)
+pxSize = Vector2(48, 48)
+fields = {
+"Boolean": false,
+"Color": Color(0.8, 1, 0, 1),
+"Entity_ref": SubResource("Resource_fgfqb"),
+"Enum": "Symbol.Gamma",
+"File_path": null,
+"Float": 8.9,
+"Integer": 67,
+"Multilines": "Wow!
+I can store multiple lines of text.
+This could be used for dialogue!",
+"Point": Vector2i(14, 10),
+"String": "A String",
+"Tile": SubResource("AtlasTexture_ne37w")
+}
+
+[node name="Cross" type="Node2D" parent="Entities" unique_id=1960791479 instance=ExtResource("7_qvern")]
+material = SubResource("CanvasItemMaterial_gv5l1")
+position = Vector2(80, 160)
+script = ExtResource("8_fgfqb")
+identifier = "Cross"
+iid = "86aa9350-3b70-11ee-ba64-032ce5929eff"
+defUid = 65
+smart_color = Color(0.3882353, 0.78039217, 0.3019608, 1)
+pxSize = Vector2(32, 32)
+
+[node name="LightTest" type="PointLight2D" parent="Entities" unique_id=1288375676 instance=ExtResource("9_paw1q")]
+position = Vector2(360, 56)
+texture = SubResource("GradientTexture2D_cc7nn")
+
+[node name="EntityFieldTest2" type="Node2D" parent="Entities" unique_id=2019587174 instance=ExtResource("7_qvern")]
+material = SubResource("CanvasItemMaterial_gv5l1")
+position = Vector2(376, 168)
+script = ExtResource("8_fgfqb")
+identifier = "EntityFieldTest"
+iid = "792e4d80-73f0-11ef-a4d8-d3dad3432b64"
+defUid = 6
+smart_color = Color(0.17254902, 0.9098039, 0.9607843, 1)
+pxSize = Vector2(48, 48)
+fields = {
+"Boolean": false,
+"Color": Color(1, 1, 1, 1),
+"Entity_ref": SubResource("Resource_03t4u"),
+"Enum": "Symbol.Alpha",
+"File_path": null,
+"Float": 0.0,
+"Integer": 0,
+"Multilines": null,
+"Point": null,
+"String": null,
+"Tile": SubResource("AtlasTexture_o3yfp")
+}
+
+[node name="IntGrid" type="TileMapLayer" parent="." unique_id=2061708060]
+tile_map_data = PackedByteArray("AAAaAAAABQAHAAMAAAAbAAAABQAFAAMAAAAcAAAABQAEAAMAAAAdAAAABQAGAAMAAAAeAAAABQAFAAMAAAAfAAAABQAHAAMAAAAaAAEABQAEAAMAAAAbAAEABQAEAAMAAAAcAAEABQAEAAMAAAAdAAEABQAGAAMAAAAeAAEABQAHAAMAAAAfAAEABQAEAAMAAAAdAAIABQAHAAMAAAAeAAIABQAHAAMAAAAfAAIABQAFAAMAAAAeAAMABQAFAAMAAAAfAAMABQAFAAMAAAAeAAQABQAHAAMAAAAfAAQABQAHAAMAAAAeAAUABQAFAAMAAAAfAAUABQAHAAMAAAAeAAYABQAHAAMAAAAfAAYABQAEAAMAAAAeAAcABQAEAAMAAAAfAAcABQAGAAMAAAAeAAgABQAGAAMAAAAfAAgABQAHAAMAAAAWAAwABQAEAAMAAAAXAAwABQAEAAMAAAAWAA0ABQAGAAMAAAAXAA0ABQAGAAMAAAASAA4ABQAFAAMAAAATAA4ABQAFAAMAAAAUAA4ABQAEAAMAAAAVAA4ABQAGAAMAAAAWAA4ABQAHAAMAAAAXAA4ABQAFAAMAAAAYAA4ABQAGAAMAAAAZAA4ABQAGAAMAAAAaAA4ABQAEAAMAAAAbAA4ABQAGAAMAAAAcAA4ABQAFAAMAAAAdAA4ABQAFAAMAAAAeAA4ABQAGAAMAAAAfAA4ABQAGAAMAAAASAA8ABQAFAAMAAAATAA8ABQAFAAMAAAAUAA8ABQAHAAMAAAAVAA8ABQAHAAMAAAAWAA8ABQAFAAMAAAAXAA8ABQAHAAMAAAAYAA8ABQAGAAMAAAAZAA8ABQAHAAMAAAAaAA8ABQAGAAMAAAAbAA8ABQAHAAMAAAAcAA8ABQAFAAMAAAAdAA8ABQAHAAMAAAAeAA8ABQAFAAMAAAAfAA8ABQAFAAMAAAAcAAIABQADAAMAACAdAAMABQADAAMAACAVAA0ABQADAAMAAAAYAA0ABQADAAMAABAZAAAABQADAAIAAAAZAAEABQADAAIAAAAdAAQABQADAAIAAAAdAAUABQADAAIAAAAdAAYABQADAAIAAAAdAAcABQADAAIAAAAdAAgABQADAAIAAAAVAAwABQADAAIAAAAYAAwABQADAAIAABARAA4ABQADAAIAAAARAA8ABQADAAIAAAAaAAIABQACAAIAACAbAAIABQACAAIAACAeAAkABQACAAIAACAfAAkABQACAAIAACAWAAsABQACAAIAAAAXAAsABQACAAIAAAASAA0ABQACAAIAAAATAA0ABQACAAIAAAAUAA0ABQACAAIAAAAZAA0ABQACAAIAAAAaAA0ABQACAAIAAAAbAA0ABQACAAIAAAAcAA0ABQACAAIAAAAdAA0ABQACAAIAAAAeAA0ABQACAAIAAAAfAA0ABQACAAIAAAAZAAIABQABAAEAACAcAAMABQABAAEAACAdAAkABQABAAEAACAVAAsABQABAAEAAAAYAAsABQABAAEAABARAA0ABQABAAEAAAAAAAAABQAEAAcAAAABAAAABQAFAAcAAAACAAAABQAFAAcAAAADAAAABQAHAAcAAAAEAAAABQAEAAcAAAAFAAAABQAEAAcAAAAGAAAABQAFAAcAAAAHAAAABQAHAAcAAAAIAAAABQAHAAcAAAAJAAAABQAGAAcAAAAKAAAABQAFAAcAAAALAAAABQAHAAcAAAAMAAAABQAGAAcAAAANAAAABQAEAAcAAAAOAAAABQAFAAcAAAAPAAAABQAEAAcAAAAQAAAABQAHAAcAAAARAAAABQAGAAcAAAASAAAABQAEAAcAAAATAAAABQAGAAcAAAAAAAEABQAHAAcAAAABAAEABQAHAAcAAAACAAEABQAHAAcAAAADAAEABQAGAAcAAAAEAAEABQAGAAcAAAAFAAEABQAGAAcAAAAGAAEABQAHAAcAAAAHAAEABQAEAAcAAAAIAAEABQAHAAcAAAAJAAEABQAEAAcAAAAKAAEABQAHAAcAAAALAAEABQAHAAcAAAAMAAEABQAHAAcAAAANAAEABQAFAAcAAAAOAAEABQAFAAcAAAAPAAEABQAEAAcAAAAQAAEABQAEAAcAAAARAAEABQAHAAcAAAASAAEABQAFAAcAAAATAAEABQAGAAcAAAAAAAIABQAGAAcAAAABAAIABQAEAAcAAAACAAIABQAGAAcAAAADAAIABQAGAAcAAAAEAAIABQAFAAcAAAAFAAIABQAHAAcAAAAGAAIABQAHAAcAAAAHAAIABQAHAAcAAAAIAAIABQAGAAcAAAAJAAIABQAEAAcAAAAKAAIABQAHAAcAAAALAAIABQAEAAcAAAAMAAIABQAGAAcAAAANAAIABQAHAAcAAAAOAAIABQAHAAcAAAAPAAIABQAFAAcAAAAQAAIABQAHAAcAAAAAAAMABQAHAAcAAAABAAMABQAHAAcAAAACAAMABQAGAAcAAAADAAMABQAFAAcAAAAEAAMABQAHAAcAAAAFAAMABQAEAAcAAAAGAAMABQAGAAcAAAAHAAMABQAFAAcAAAAIAAMABQAGAAcAAAAJAAMABQAFAAcAAAAKAAMABQAFAAcAAAALAAMABQAEAAcAAAAMAAMABQAHAAcAAAANAAMABQAGAAcAAAAOAAMABQAEAAcAAAAPAAMABQAEAAcAAAAAAAQABQAGAAcAAAABAAQABQAGAAcAAAACAAQABQAGAAcAAAADAAQABQAGAAcAAAAEAAQABQAHAAcAAAAFAAQABQAFAAcAAAAGAAQABQAGAAcAAAAHAAQABQAFAAcAAAAIAAQABQAFAAcAAAAJAAQABQAGAAcAAAAKAAQABQAFAAcAAAALAAQABQAGAAcAAAAMAAQABQAEAAcAAAANAAQABQAHAAcAAAAOAAQABQAGAAcAAAAPAAQABQAEAAcAAAAAAAUABQAHAAcAAAABAAUABQAFAAcAAAACAAUABQAGAAcAAAADAAUABQAEAAcAAAAEAAUABQAGAAcAAAAFAAUABQAEAAcAAAAGAAUABQAEAAcAAAAHAAUABQAGAAcAAAAIAAUABQAHAAcAAAAJAAUABQAFAAcAAAAKAAUABQAHAAcAAAALAAUABQAHAAcAAAAMAAUABQAGAAcAAAANAAUABQAFAAcAAAAOAAUABQAEAAcAAAAPAAUABQAGAAcAAAAAAAYABQAGAAcAAAABAAYABQAGAAcAAAACAAYABQAEAAcAAAADAAYABQAFAAcAAAAEAAYABQAGAAcAAAAFAAYABQAEAAcAAAAGAAYABQAHAAcAAAAHAAYABQAFAAcAAAAIAAYABQAFAAcAAAAJAAYABQAHAAcAAAAKAAYABQAGAAcAAAALAAYABQAHAAcAAAAMAAYABQAEAAcAAAANAAYABQAEAAcAAAAOAAYABQAEAAcAAAAPAAYABQAEAAcAAAAAAAcABQAGAAcAAAABAAcABQAGAAcAAAACAAcABQAHAAcAAAADAAcABQAHAAcAAAAEAAcABQAEAAcAAAAFAAcABQAFAAcAAAAGAAcABQAEAAcAAAAHAAcABQAEAAcAAAAIAAcABQAEAAcAAAAJAAcABQAFAAcAAAAKAAcABQAEAAcAAAALAAcABQAGAAcAAAAMAAcABQAHAAcAAAANAAcABQAGAAcAAAAOAAcABQAEAAcAAAAPAAcABQAHAAcAAAAAAAgABQAHAAcAAAABAAgABQAHAAcAAAACAAgABQAFAAcAAAAAAAkABQAGAAcAAAABAAkABQAGAAcAAAAAAAoABQAGAAcAAAABAAoABQAHAAcAAAAAAAsABQAFAAcAAAABAAsABQAFAAcAAAAAAAwABQAFAAcAAAABAAwABQAFAAcAAAAAAA0ABQAGAAcAAAABAA0ABQAEAAcAAAACAA0ABQAEAAcAAAAAAA4ABQAGAAcAAAABAA4ABQAHAAcAAAACAA4ABQAHAAcAAAADAA4ABQAHAAcAAAAEAA4ABQAFAAcAAAAFAA4ABQAEAAcAAAAGAA4ABQAEAAcAAAAHAA4ABQAEAAcAAAAIAA4ABQAGAAcAAAAJAA4ABQAEAAcAAAAKAA4ABQAGAAcAAAALAA4ABQAGAAcAAAAMAA4ABQAGAAcAAAANAA4ABQAGAAcAAAAOAA4ABQAGAAcAAAAPAA4ABQAEAAcAAAAAAA8ABQAGAAcAAAABAA8ABQAGAAcAAAACAA8ABQAHAAcAAAADAA8ABQAHAAcAAAAEAA8ABQAEAAcAAAAFAA8ABQAFAAcAAAAGAA8ABQAFAAcAAAAHAA8ABQAGAAcAAAAIAA8ABQAFAAcAAAAJAA8ABQAHAAcAAAAKAA8ABQAGAAcAAAALAA8ABQAFAAcAAAAMAA8ABQAFAAcAAAANAA8ABQAEAAcAAAAOAA8ABQAFAAcAAAAPAA8ABQAGAAcAAAARAAIABQADAAcAADAQAAMABQADAAcAADADAAgABQADAAcAADACAAkABQADAAcAADACAAwABQADAAcAABADAA0ABQADAAcAABAUAAAABQADAAYAABAUAAEABQADAAYAABAQAAQABQADAAYAABAQAAUABQADAAYAABAQAAYABQADAAYAABAQAAcABQADAAYAABACAAoABQADAAYAABACAAsABQADAAYAABAQAA4ABQADAAYAABAQAA8ABQADAAYAABASAAIABQACAAYAACATAAIABQACAAYAACAEAAgABQACAAYAACAFAAgABQACAAYAACAGAAgABQACAAYAACAHAAgABQACAAYAACAIAAgABQACAAYAACAJAAgABQACAAYAACAKAAgABQACAAYAACALAAgABQACAAYAACAMAAgABQACAAYAACANAAgABQACAAYAACAOAAgABQACAAYAACAPAAgABQACAAYAACAEAA0ABQACAAYAAAAFAA0ABQACAAYAAAAGAA0ABQACAAYAAAAHAA0ABQACAAYAAAAIAA0ABQACAAYAAAAJAA0ABQACAAYAAAAKAA0ABQACAAYAAAALAA0ABQACAAYAAAAMAA0ABQACAAYAAAANAA0ABQACAAYAAAAOAA0ABQACAAYAAAAPAA0ABQACAAYAAAAUAAIABQABAAUAADARAAMABQABAAUAADAQAAgABQABAAUAADADAAkABQABAAUAADADAAwABQABAAUAABAQAA0ABQABAAUAABA=")
+tile_set = ExtResource("4_ube0x")

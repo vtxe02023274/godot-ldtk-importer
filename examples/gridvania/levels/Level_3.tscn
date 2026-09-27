@@ -1,0 +1,275 @@
+[gd_scene format=4 uid="uid://bfgrteaaiynvw"]
+
+[ext_resource type="Script" uid="uid://du4xukr3a505a" path="res://addons/ldtk-importer/src/nodes/ldtk-level.gd" id="1_wwrtt"]
+[ext_resource type="Script" uid="uid://cmreq53ia0jip" path="res://addons/ldtk-importer/src/resources/ldtk-level-neighbour.gd" id="2_bmgg2"]
+[ext_resource type="Script" uid="uid://cd7osjuayh4at" path="res://addons/ldtk-importer/src/resources/ldtk-reference.gd" id="3_vxsjs"]
+[ext_resource type="TileSet" uid="uid://cxnl5l6fo6dnv" path="res://examples/gridvania/tilesets/tileset_16px.tres" id="4_k4ggv"]
+[ext_resource type="Script" uid="uid://oc3rr22vfpnk" path="res://addons/ldtk-importer/src/nodes/ldtk-entity-layer.gd" id="5_x34qh"]
+[ext_resource type="Texture2D" uid="uid://cc1reqexc5a02" path="res://examples/gridvania/tilesets/tileset_basic.png" id="6_5p0ht"]
+[ext_resource type="PackedScene" uid="uid://c36l6fpttus66" path="res://addons/ldtk-importer/src/nodes/placeholder/ldtk-entity.tscn" id="7_wb7id"]
+[ext_resource type="Script" uid="uid://ds4gnehactbob" path="res://addons/ldtk-importer/src/nodes/placeholder/ldtk-entity.gd" id="8_i7kmi"]
+
+[sub_resource type="Resource" id="Resource_f4y20"]
+script = ExtResource("3_vxsjs")
+iid = "c3dcff30-3b70-11ee-ba64-f5e46a8086a7"
+sceneFile = "res://examples/gridvania/levels/Level_1.tscn"
+
+[sub_resource type="Resource" id="Resource_x34qh"]
+script = ExtResource("2_bmgg2")
+level = SubResource("Resource_f4y20")
+
+[sub_resource type="Resource" id="Resource_e2yth"]
+script = ExtResource("3_vxsjs")
+iid = "9df499d0-3b70-11ee-ba64-71a08bd0ec60"
+sceneFile = "res://examples/gridvania/levels/Level_4.tscn"
+
+[sub_resource type="Resource" id="Resource_5p0ht"]
+script = ExtResource("2_bmgg2")
+dir = 3
+level = SubResource("Resource_e2yth")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_b7km8"]
+diffuse_texture = ExtResource("6_5p0ht")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wb7id"]
+atlas = SubResource("CanvasTexture_b7km8")
+region = Rect2(112, 0, 16, 16)
+
+[sub_resource type="Resource" id="Resource_i7kmi"]
+script = ExtResource("3_vxsjs")
+iid = "8152c710-3b70-11ee-ba64-b9a626de95ec"
+sceneFile = "res://examples/gridvania/levels/Level_4.tscn"
+scenePath = NodePath("Entities/EntityFieldTest")
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gv5l1"]
+light_mode = 1
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_hwdrr"]
+diffuse_texture = ExtResource("6_5p0ht")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oy36n"]
+atlas = SubResource("CanvasTexture_hwdrr")
+region = Rect2(112, 0, 16, 16)
+
+[node name="Level_3" type="Node2D" unique_id=1506333655]
+script = ExtResource("1_wwrtt")
+iid = "cccf7e60-3b70-11ee-ba64-bfce6eccf4fc"
+world_position = Vector2(1024, 512)
+size = Vector2i(256, 256)
+fields = {
+"LevelBoolean": false,
+"LevelColor": Color(1, 0.8, 0, 1),
+"LevelInteger": 0
+}
+neighbours = Array[ExtResource("2_bmgg2")]([SubResource("Resource_x34qh"), SubResource("Resource_5p0ht")])
+bg_color = Color(0.4117647, 0.41568628, 0.4745098, 1)
+
+[node name="Tiles" type="TileMapLayer" parent="." unique_id=1890563821]
+tile_set = ExtResource("4_k4ggv")
+
+[node name="Entities" type="Node2D" parent="." unique_id=189242919]
+script = ExtResource("5_x34qh")
+iid = "cccf7e62-3b70-11ee-ba64-ff8a865280e4"
+definition = {
+"gridSize": 16.0,
+"identifier": "Entities",
+"intGridValues": [],
+"offset": Vector2i(0, 0),
+"parallax": Vector2(0, 0),
+"parallaxScaling": true,
+"type": "Entities",
+"uid": 2
+}
+entities = [{
+"defUid": 6,
+"fields": {
+"Boolean": false,
+"Color": Color(0.13725491, 0.5058824, 0.8745098, 1),
+"Entity_ref": SubResource("Resource_i7kmi"),
+"Enum": "Symbol.Alpha",
+"File_path": null,
+"Float": 0.0,
+"Integer": 0,
+"Multilines": null,
+"Point": Vector2i(4, 5),
+"String": null,
+"Tile": SubResource("AtlasTexture_wb7id")
+},
+"identifier": "EntityFieldTest",
+"iid": "7d7fed20-3b70-11ee-ba64-c5efa564a895",
+"position": Vector2i(168, 136),
+"pxSize": Vector2i(48, 48),
+"smart_color": Color(0.17254902, 0.9098039, 0.9607843, 1)
+}]
+entity_definitions = {
+6: {
+"color": Color(0.17254902, 0.9098039, 0.9607843, 1),
+"field_defs": {
+7: {
+"identifier": "Integer",
+"type": "Int"
+},
+8: {
+"identifier": "Float",
+"type": "Float"
+},
+9: {
+"identifier": "Boolean",
+"type": "Bool"
+},
+10: {
+"identifier": "String",
+"type": "String"
+},
+11: {
+"identifier": "Multilines",
+"type": "String"
+},
+12: {
+"identifier": "Color",
+"type": "Color"
+},
+13: {
+"identifier": "Enum",
+"type": "LocalEnum.Symbol"
+},
+14: {
+"identifier": "File_path",
+"type": "FilePath"
+},
+15: {
+"identifier": "Tile",
+"type": "Tile"
+},
+16: {
+"identifier": "Entity_ref",
+"type": "EntityRef"
+},
+17: {
+"identifier": "Point",
+"type": "Point"
+}
+},
+"hollow": true,
+"identifier": "EntityFieldTest",
+"renderMode": "Ellipse",
+"tags": [],
+"tile": null,
+"uid": 6
+},
+48: {
+"color": Color(0.3882353, 0.78039217, 0.3019608, 1),
+"field_defs": {
+49: {
+"identifier": "IntegerArray",
+"type": "Array<Int>"
+},
+50: {
+"identifier": "FloatArray",
+"type": "Array<Float>"
+},
+51: {
+"identifier": "BooleanArray",
+"type": "Array<Bool>"
+},
+52: {
+"identifier": "StringArray",
+"type": "Array<String>"
+},
+53: {
+"identifier": "MultilinesArray",
+"type": "Array<String>"
+},
+54: {
+"identifier": "ColorArray",
+"type": "Array<Color>"
+},
+55: {
+"identifier": "EnumArray",
+"type": "Array<LocalEnum.Symbol>"
+},
+56: {
+"identifier": "File_pathArray",
+"type": "Array<FilePath>"
+},
+57: {
+"identifier": "TileArray",
+"type": "Array<Tile>"
+},
+58: {
+"identifier": "EntityRefArray",
+"type": "Array<EntityRef>"
+},
+59: {
+"identifier": "PointArray",
+"type": "Array<Point>"
+},
+64: {
+"identifier": "Enum2Array",
+"type": "Array<LocalEnum.Letter>"
+}
+},
+"hollow": false,
+"identifier": "EntityArrayFieldTest",
+"renderMode": "Rectangle",
+"tags": [],
+"tile": null,
+"uid": 48
+},
+65: {
+"color": Color(0.3882353, 0.78039217, 0.3019608, 1),
+"field_defs": {},
+"hollow": false,
+"identifier": "Cross",
+"renderMode": "Cross",
+"tags": [],
+"tile": null,
+"uid": 65
+},
+73: {
+"color": Color(0.74509805, 0.2901961, 0.18431373, 1),
+"field_defs": {
+74: {
+"identifier": "Color",
+"type": "Color"
+},
+75: {
+"identifier": "Energy",
+"type": "Float"
+}
+},
+"hollow": true,
+"identifier": "LightTest",
+"renderMode": "Ellipse",
+"tags": [],
+"tile": null,
+"uid": 73
+}
+}
+
+[node name="EntityFieldTest" type="Node2D" parent="Entities" unique_id=1356035538 instance=ExtResource("7_wb7id")]
+material = SubResource("CanvasItemMaterial_gv5l1")
+position = Vector2(168, 136)
+script = ExtResource("8_i7kmi")
+identifier = "EntityFieldTest"
+iid = "7d7fed20-3b70-11ee-ba64-c5efa564a895"
+defUid = 6
+smart_color = Color(0.17254902, 0.9098039, 0.9607843, 1)
+pxSize = Vector2(48, 48)
+fields = {
+"Boolean": false,
+"Color": Color(0.13725491, 0.5058824, 0.8745098, 1),
+"Entity_ref": SubResource("Resource_i7kmi"),
+"Enum": "Symbol.Alpha",
+"File_path": null,
+"Float": 0.0,
+"Integer": 0,
+"Multilines": null,
+"Point": Vector2i(4, 5),
+"String": null,
+"Tile": SubResource("AtlasTexture_oy36n")
+}
+
+[node name="IntGrid" type="TileMapLayer" parent="." unique_id=1969977392]
+tile_map_data = PackedByteArray("AAAAAAAABQAGAAMAAAABAAAABQAHAAMAAAACAAAABQAEAAMAAAADAAAABQAFAAMAAAAEAAAABQAFAAMAAAALAAAABQAFAAMAAAAMAAAABQAEAAMAAAANAAAABQAFAAMAAAAOAAAABQAGAAMAAAAPAAAABQAEAAMAAAAAAAEABQAHAAMAAAABAAEABQAHAAMAAAACAAEABQAHAAMAAAADAAEABQAEAAMAAAAEAAEABQAGAAMAAAALAAEABQAFAAMAAAAMAAEABQAEAAMAAAANAAEABQAGAAMAAAAOAAEABQAGAAMAAAAPAAEABQAGAAMAAAAAAAIABQAHAAMAAAABAAIABQAFAAMAAAAOAAIABQAGAAMAAAAPAAIABQAGAAMAAAAAAAMABQAEAAMAAAABAAMABQAFAAMAAAAOAAMABQAHAAMAAAAPAAMABQAFAAMAAAAAAAQABQAHAAMAAAABAAQABQAHAAMAAAAOAAQABQAGAAMAAAAPAAQABQAGAAMAAAAAAAUABQAFAAMAAAABAAUABQAFAAMAAAAOAAUABQAFAAMAAAAPAAUABQAEAAMAAAAAAAYABQAEAAMAAAABAAYABQAGAAMAAAAOAAYABQAEAAMAAAAPAAYABQAEAAMAAAAAAAcABQAFAAMAAAABAAcABQAEAAMAAAAOAAcABQAFAAMAAAAPAAcABQAFAAMAAAAOAAgABQAEAAMAAAAPAAgABQAHAAMAAAAOAAkABQAHAAMAAAAPAAkABQAFAAMAAAAOAAoABQAEAAMAAAAPAAoABQAHAAMAAAAOAAsABQAFAAMAAAAPAAsABQAGAAMAAAAHAAwABQAHAAMAAAAIAAwABQAFAAMAAAAOAAwABQAEAAMAAAAPAAwABQAHAAMAAAAHAA0ABQAFAAMAAAAIAA0ABQAHAAMAAAAOAA0ABQAHAAMAAAAPAA0ABQAGAAMAAAAAAA4ABQAEAAMAAAABAA4ABQAGAAMAAAACAA4ABQAFAAMAAAADAA4ABQAEAAMAAAAEAA4ABQAGAAMAAAAFAA4ABQAHAAMAAAAGAA4ABQAHAAMAAAAHAA4ABQAGAAMAAAAIAA4ABQAGAAMAAAAJAA4ABQAGAAMAAAAKAA4ABQAFAAMAAAALAA4ABQAFAAMAAAAMAA4ABQAGAAMAAAANAA4ABQAEAAMAAAAOAA4ABQAEAAMAAAAPAA4ABQAHAAMAAAAAAA8ABQAHAAMAAAABAA8ABQAEAAMAAAACAA8ABQAFAAMAAAADAA8ABQAEAAMAAAAEAA8ABQAFAAMAAAAFAA8ABQAGAAMAAAAGAA8ABQAHAAMAAAAHAA8ABQAEAAMAAAAIAA8ABQAEAAMAAAAJAA8ABQAHAAMAAAAKAA8ABQAFAAMAAAALAA8ABQAGAAMAAAAMAA8ABQAEAAMAAAANAA8ABQAGAAMAAAAOAA8ABQAEAAMAAAAPAA8ABQAGAAMAAAACAAIABQADAAMAADANAAIABQADAAMAACAGAA0ABQADAAMAAAAJAA0ABQADAAMAABANAA0ABQADAAMAAAAFAAAABQADAAIAABAKAAAABQADAAIAAAAFAAEABQADAAIAABAKAAEABQADAAIAAAACAAMABQADAAIAABANAAMABQADAAIAAAACAAQABQADAAIAABANAAQABQADAAIAAAACAAUABQADAAIAABANAAUABQADAAIAAAACAAYABQADAAIAABANAAYABQADAAIAAAACAAcABQADAAIAABANAAcABQADAAIAAAANAAgABQADAAIAAAANAAkABQADAAIAAAANAAoABQADAAIAAAANAAsABQADAAIAAAAGAAwABQADAAIAAAAJAAwABQADAAIAABANAAwABQADAAIAAAADAAIABQACAAIAACAEAAIABQACAAIAACALAAIABQACAAIAACAMAAIABQACAAIAACAAAAgABQACAAIAACABAAgABQACAAIAACAHAAsABQACAAIAAAAIAAsABQACAAIAAAAAAA0ABQACAAIAAAABAA0ABQACAAIAAAACAA0ABQACAAIAAAADAA0ABQACAAIAAAAEAA0ABQACAAIAAAAFAA0ABQACAAIAAAAKAA0ABQACAAIAAAALAA0ABQACAAIAAAAMAA0ABQACAAIAAAAFAAIABQABAAEAADAKAAIABQABAAEAACACAAgABQABAAEAADAGAAsABQABAAEAAAAJAAsABQABAAEAABA=")
+tile_set = ExtResource("4_k4ggv")

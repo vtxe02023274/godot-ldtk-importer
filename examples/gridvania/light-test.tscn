@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://dispmukeuhra8"]
+
+[sub_resource type="Gradient" id="Gradient_pic0t"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_cc7nn"]
+gradient = SubResource("Gradient_pic0t")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0, 0.5)
+metadata/_snap_enabled = true
+
+[node name="LightTest" type="PointLight2D" unique_id=1288375676]
+texture = SubResource("GradientTexture2D_cc7nn")
