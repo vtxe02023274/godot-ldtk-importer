@@ -37,4 +37,4 @@ level_post_import=""
 world_post_import=""
 Debug=""
 force_tileset_reimport=false
-verbose_output=true
+verbose_output=false

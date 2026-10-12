@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="LDTKEntityMapper" format=3 uid="uid://77cipapul81l"]
 
-[ext_resource type="PackedScene" uid="uid://dispmukeuhra8" path="res://examples/gridvania/light-test.tscn" id="1_g6ibb"]
-[ext_resource type="Script" uid="uid://dgdym08assa44" path="res://examples/gridvania/entity-map.gd" id="2_56fnc"]
+[ext_resource type="PackedScene" uid="uid://dispmukeuhra8" path="res://examples/light-test.tscn" id="1_g6ibb"]
+[ext_resource type="Script" uid="uid://dgdym08assa44" path="res://examples/gridvania/data/entity-import.gd" id="2_56fnc"]
 [ext_resource type="Script" uid="uid://cr4c2blnnrtg8" path="res://addons/ldtk-importer/src/resources/ldtk-entity-mapper.gd" id="3_56fnc"]
 
 [resource]

@@ -1,7 +1,12 @@
 extends PointLight2D
 
+@onready var world: LDTKWorld = $"../example_gridvania"
 @onready var camera: Camera2D = $"../Camera2D"
 var dragging: bool = false
+
+func _ready() -> void:
+	await owner.ready
+	camera.position = world.rect.size / 2 - DisplayServer.window_get_size() / 2
 
 func _input(event: InputEvent) -> void:
 	if event.is_action("drag"):
