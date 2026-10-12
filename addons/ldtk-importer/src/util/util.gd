@@ -87,7 +87,7 @@ static func timer_finish(message: String, indent: int = 0, doPrint := true) -> i
 	if time_history.size() > 0:
 		time_history[-1].time = t
 
-	if (doPrint and options.verbose_output):
+	if doPrint and options.verbose_output:
 		# Print 'gross' duration for this block
 		var d2: int = t - last.init
 		print_time("item_info_time", message, d2, indent)
@@ -149,8 +149,6 @@ static var level_refs: Dictionary[String,LDTKReference] = {}
 static var instance_refs: Dictionary[String,LDTKReference] = {}
 static var unresolved_refs := []
 
-static var path_resolvers := []
-
 static func update_instance_reference(iid: String, node: Node) -> void:
 	if not instance_refs.has(iid):
 		instance_refs[iid] = LDTKReference.new(iid, node)
@@ -163,10 +161,10 @@ static func add_tileset_reference(uid: int, atlas: TileSetAtlasSource) -> void:
 # This is useful for handling entity instances, as they might not exist yet when encountered
 # or be overwritten at a later stage (e.g. post-import) when importing an LDTK level/world.
 static func add_unresolved_reference(
-	object: Variant,
-	property: Variant,
-	node: Variant = object,
-	iid: String = str(object[property])
+		object: Variant,
+		property: Variant,
+		node: Variant = object,
+		iid: String = str(object[property])
 ) -> void:
 	unresolved_refs.append({
 			"object": object,
@@ -176,8 +174,6 @@ static func add_unresolved_reference(
 	})
 
 static func handle_references(owner_paths: Dictionary[Node, String]) -> void:
-	nice_print("item_info", "Handle References", 1)
-
 	# Assume all nodes are updated. Get data to construct a ColdReference.
 	for ref: LDTKReference in instance_refs.values():
 		var owner = ref.node.owner
@@ -186,49 +182,30 @@ static func handle_references(owner_paths: Dictionary[Node, String]) -> void:
 			# We can assume what it will be, though!
 			if owner in owner_paths:
 				ref.sceneFile = owner_paths[owner]
-			else:
-				#print("Owner not found: %s" % owner)
-				pass
 
-			#if owner.scene_file_path:
-				#print("Scene file path: %s" % owner)
-				#ref.sceneFile = owner.scene_file_path
-			#else:
-				#print("No scene file path: %s" % owner)
 			ref.scenePath = owner.get_path_to(ref.node)
-			#print("Scene Path: %s" % ref.scenePath)
 		else:
 			# This is likely a level
 			if ref.node is LDTKLevel:
 				if ref.node in owner_paths:
 					ref.sceneFile = owner_paths[ref.node]
-					#print("Scene path found: %s" % owner_paths[ref.node])
-					pass
-				else:
-					#print("Level not found in owner paths: %s" % ref.node)
-					pass
-			else:
-				#print("No owner found: %s" % ref.node)
-				pass
 
 	resolve_references()
 	clean_references()
-	clean_resolvers()
 
 static func resolve_references(force: bool = true) -> void:
 	var count := unresolved_refs.size()
 	if not force and (count == 0 or not options.resolve_entityrefs):
-		if (options.verbose_output): nice_print("item_info", "No references to resolve", 1)
+		if options.verbose_output: nice_print("item_info", "No references to resolve", 1)
 		return
 	else:
-		if (options.verbose_output): nice_print("item_info", "Resolving %s references" % [count], 1)
+		if options.verbose_output: nice_print("item_info", "Resolving %s references" % [count], 1)
 
 	var solved_refcount := 0
 
 	for ref: Dictionary in unresolved_refs:
-		# NOTE: We are turning "object[property] = iid" -> object[property] = <REFERENCE>"
-		var object: Variant = ref.object # Expected: Node, Dict or Array
-		var property: Variant = ref.property # Expected: String or Int
+		var object: Variant = ref.object 		# Expected: Node, Dict or Array
+		var property: Variant = ref.property 	# Expected: String or Int
 		var iid: String = ref.iid
 
 		if object[property] is LDTKReference:
@@ -236,45 +213,23 @@ static func resolve_references(force: bool = true) -> void:
 
 		if instance_refs.has(iid):
 			var instance: LDTKReference = instance_refs[iid]
-
 			if object[property] is LDTKReference:
-				#nice_print("item_ok", "Resolved ref '%s' '%s'" % [property, instance.sceneFile], 1)
 				object[property] = instance
+				solved_refcount += 1
 			else:
 				nice_print("item_fail", "Cannot resolve ref '%s' '%s'" % [instance.iid, ref.node.name], 1)
-
-			# BELOW: ORIGINAL
-			#var node: Node = ref.node # Expected: Node, but needs to accept null
-			#if instance is Node and node is Node:
-				## BUG: When using 'Pack Levels', external references cannot be resolved at import time. (e.g. Level_0 -> Level_1)
-				## Internal references can resolve, but Godot pushes the error: Parameter "common_parent" is null.
-				## Currently it's a choice between a bunch of errors (that suppress other messages), or no resolving.
-				##if instance.owner != null and node.owner != null:
-				#var path = node.get_path_to(instance)
-				#if path:
-					#object[property] = path
-				#else:
-					#nice_print("item_fail", "Cannot resolve ref (out-of-bounds?) '%s' '%s'" % [instance.name, node.name], 1)
-					#continue
-			#else:
-				#object[property] = instance
-
-			solved_refcount += 1
 		else:
 			nice_print("item_fail", "No ref found '%s'" % iid, 1)
 
 	var leftover_refcount: int = unresolved_refs.size() - solved_refcount
 	if leftover_refcount > 0:
 		nice_print("item_info", "Could not resolve %s references, most likely non-existent entities." % [leftover_refcount], 1)
+	else:
+		nice_print("item_info", "Resolved %s references." % [solved_refcount], 1)
 
 static func clean_references() -> void:
 	tileset_refs.clear()
 	instance_refs.clear()
 	unresolved_refs.clear()
-
-static func clean_resolvers() -> void:
-	for resolver in path_resolvers:
-		resolver.free()
-	path_resolvers.clear()
 
 #endregion

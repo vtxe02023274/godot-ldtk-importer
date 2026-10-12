@@ -9,15 +9,15 @@ extends Node2D
 ## Identifier String. [br]
 ## [b]NOTE[/b]: Does not always match [code]Node.name[/code] if multiple instances are present.
 @export var identifier := "EntityPlaceholder"
-## Unique hash for this entity instance. Used to reference this instance in an LDTK project.
+## Unique Instance ID, provided by LDTK.
 @export var iid: String
-## Definition UID for this Entity.
+## Definition UID for this Entity. Can be used to reference the Entity Definition in `LDTKEntityLayer.entity_definitions`.
 @export var defUid: int
 ## Smart Color derived from Entity data.
 @export var smart_color := Color.hex(0xffcc0088)
 ## Entity size, in pixels.
 @export var pxSize := Vector2.ZERO
-## Dictionary containing fields for this Entity instance.
+## Dictionary containing parsed field entries for this Entity instance.
 @export var fields := {}
 
 #@export var pivot := Vector2.ZERO
@@ -26,7 +26,7 @@ extends Node2D
 @onready var sprite: Sprite2D = $Sprite
 @onready var label: Label = $Label
 
-var definition
+var definition: Dictionary
 var _refs := []
 var _points := []
 var _drawPaths := false
@@ -105,7 +105,7 @@ func _draw() -> void:
 	if _drawPaths:
 		for ref in _refs:
 			if ref is LDTKReference:
-				var lookup = LDTK.get_reference(ref.iid)
+				var lookup: LDTKReference = LDTK.get_reference(ref.iid)
 				if not lookup: continue
 				var node
 				var path = lookup.get_node_path(self)
@@ -142,10 +142,9 @@ func _draw() -> void:
 
 
 func _parse_points(points: Array) -> Array:
-	if points.size() == 0:
-		return points
-	if get_parent() is SubViewport:
-		return points
+	if points.size() == 0: return points
+	if get_parent() is SubViewport: return points
+
 	var origin = get_parent().global_position - global_position
 	var gridSize = get_parent().definition.gridSize
 	var cellOffset = gridSize * Vector2(0.5, 0.5)
@@ -158,9 +157,7 @@ func _get_definition() -> Dictionary:
 	var parent = get_parent() as LDTKEntityLayer
 	if not parent:
 		return {}
-
-	for def in parent.entity_definitions.values():
-		if def.identifier == identifier:
-			return def
-
-	return {}
+	if parent.entity_definitions.has(defUid):
+		return parent.entity_definitions[defUid]
+	else:
+		return {}

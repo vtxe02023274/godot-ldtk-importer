@@ -1,9 +1,13 @@
 @tool
-class_name LDTKReference extends Resource
+class_name LDTKReference
+extends Resource
 
+## Unique Instance ID, provided by LDTK.
 @export var iid: String
-@export var sceneFile: String ## Scene File
-@export var scenePath: NodePath ## Scene Path
+## Scene File (e.g. `res://scene.tscn`) this reference points to.
+@export var sceneFile: String
+## Scene Path (e.g. `$Node/Node`) from the scene's root node.
+@export var scenePath: NodePath
 
 var node: Node  		# Expected: Node, but needs to accept null
 var __nodePath: NodePath
@@ -27,4 +31,3 @@ func get_node_path(start_node: Node = LDTK) -> NodePath:
 	if start_node == LDTK:
 		__nodePath = path
 	return path
-

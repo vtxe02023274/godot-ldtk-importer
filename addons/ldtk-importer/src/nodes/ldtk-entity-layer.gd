@@ -3,10 +3,14 @@
 class_name LDTKEntityLayer
 extends Node2D
 
+## Unique Instance ID, provided by LDTK.
 @export var iid: String
+## Parsed EntityLayer definition.
 @export var definition: Dictionary
-@export var entities: Array
-@export var entity_definitions: Dictionary
+## List of entity instances on this EntityLayer.
+@export var entities: Array[Dictionary]
+## Dictionary containing definitions for each unique Entity on this layer.
+@export var entity_definitions: Dictionary[int,Dictionary]
 
 func _enter_tree() -> void:
 	LDTK.register_reference(iid, self)

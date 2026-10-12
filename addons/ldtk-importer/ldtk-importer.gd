@@ -222,7 +222,7 @@ func _import(
 				Util.print("item_save", "Saving EntityMapper: [color=#fe8019]%s[/color]" % [options.entity_mapper], 1)
 				ResourceSaver.save(entity_mapper, options.entity_mapper)
 			else:
-				Util.print("item_save", "No changes detected for EntityMapper: [color=#fe8019]%s[/color]" % [options.entity_mapper], 1)
+				Util.print("item_info", "No changes detected for EntityMapper: [color=#fe8019]%s[/color]" % [options.entity_mapper], 1)
 			# Store to util (used in entity_layers)
 			Util.entity_mapper = entity_mapper
 	Util.timer_finish("Definitions Created")
@@ -254,20 +254,19 @@ func _import(
 		var levels := Level.build_levels(world_data, definitions, base_dir, use_external_levels)
 
 		# Save Levels (after Level Post-Import)
-		if (Util.options.pack_levels):
+		if Util.options.pack_levels:
 			var levels_path := base_dir + 'levels/'
 			var directory = DirAccess.open(base_dir)
 			if not directory.dir_exists(levels_path):
 				directory.make_dir(levels_path)
 
-			# Resolve Refs + Cleanup Resolvers. We don't want to save 'NodePathResolver' in the Level scene.
-			#if (verbose): Util.print("block", "References")
-
-			# Build a dict of levels to predicted save paths.
+			# Build a dict of levels (scene roots) to predicted save paths.
 			var owner_paths: Dictionary[Node, String] = {}
 			for level in levels:
 				var path := "%s%s.%s" % [levels_path, level.name, _get_save_extension()]
 				owner_paths[level] = path
+
+			# Handle references
 			Util.handle_references(owner_paths)
 
 			if verbose: Util.print("block", "Save Levels")
@@ -343,6 +342,7 @@ func save_level(
 ) -> String:
 	var packed_level = PackedScene.new()
 	packed_level.pack(level)
+
 	var level_path = "%s%s.%s" % [save_path, level.name, _get_save_extension()]
 
 	var err := ResourceSaver.save(packed_level, level_path)

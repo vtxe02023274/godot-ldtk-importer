@@ -37,7 +37,7 @@ static func add_layers(
 				if has_tileset:
 					layer = create_tile_layer(layer_instance, layer_def)
 
-				if (not has_tileset or Util.options.integer_grid_tilesets):
+				if not has_tileset or Util.options.integer_grid_tilesets:
 					layer = create_intgrid_layer(layer_instance, layer_def)
 
 			"Tiles", "AutoLayer":
@@ -167,7 +167,7 @@ static func create_tile_layer(
 
 	# Get tile data
 	var tiles: Array
-	if (layer_data.__type == "Tiles"):
+	if layer_data.__type == "Tiles":
 		tiles = layer_data.gridTiles
 	else:
 		tiles = layer_data.autoLayerTiles
@@ -175,7 +175,7 @@ static func create_tile_layer(
 	var tile_source_id = layer_data.__tilesetDefUid
 	var grid_size := Vector2(layer_data.__gridSize, layer_data.__gridSize)
 
-	if (tile_source_id == null):
+	if not tile_source_id:
 		Util.print("item_fail", "Null Tilemap on layerInstance: '%s'" % [layer_name], 2)
 		push_warning("Detected null tilemap on a level '%s' layer instance '%s'. Please fix this in your LDTK project file." % [__current_level, layer_name])
 		return tilemap
@@ -321,7 +321,7 @@ static func __place_tiles(
 		var alternative_tile: int = 0
 		var tile_flip := TileUtil.get_tile_flip_mask(int(tile.f))
 
-		if (tile_flip != 0):
+		if tile_flip != 0:
 			alternative_tile = tile_flip
 
 		# Handle alpha

@@ -45,7 +45,7 @@ static func run_entity_post_import(level: LDTKLevel, script_path: String) -> LDT
 		if layer is not LDTKEntityLayer:
 			continue
 
-		var entityLayerName = layer.get_parent().name + "." + layer.name
+		var entityLayerName = "%s.%s" % [layer.get_parent().name, layer.name]
 		Util.print("entity_post_import", entityLayerName, 3)
 		layer = run(layer, script_path)
 

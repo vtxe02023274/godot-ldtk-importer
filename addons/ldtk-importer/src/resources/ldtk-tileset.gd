@@ -1,7 +1,7 @@
 #@icon("ldtk-entity.svg") #TODO: FIX
 @tool
-extends TileSet
 class_name LDTKTileSet
+extends TileSet
 
 @export var cool := true
 

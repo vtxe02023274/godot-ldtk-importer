@@ -33,7 +33,7 @@ static func build_tilesets(
 				accum[grid_size] = get_tileset(grid_size, base_dir)
 
 			# Create TileSetSource for IntGrids
-			if (Util.options.integer_grid_tilesets):
+			if Util.options.integer_grid_tilesets:
 				if layer_def.type == "IntGrid" and layer_def.intGridValues.size() > 0:
 					var intgrid_uid = int(layer_def.uid)
 					var intgrid_source = create_intgrid_source(layer_def)
@@ -63,8 +63,8 @@ static func build_tilesets(
 
 			# Check if override exists.
 			var has_override: bool = false
-			if (tileset_overrides.has(size)):
-				if (tileset_overrides[size].has(int(uid))):
+			if tileset_overrides.has(size):
+				if tileset_overrides[size].has(int(uid)):
 					has_override = true
 
 			# Include Source if size matches grid (or is an override found for this grid size)
@@ -75,13 +75,13 @@ static func build_tilesets(
 					source = source.duplicate()
 					tileset.add_source(source, uid)
 
-				if (Util.options.tileset_custom_data):
+				if Util.options.tileset_custom_data:
 					if definitions.tilesets.has(uid):
 						var tileset_def: Dictionary = definitions.tilesets[uid]
 						add_tileset_custom_data(tileset_def, tileset, source, tileset_def.__cWid)
 
 	# Post-Import
-	if (Util.options.tileset_post_import):
+	if Util.options.tileset_post_import:
 		tilesets = PostImport.run_tileset_post_import(tilesets, Util.options.tileset_post_import)
 
 	# Store tilesets in Util
@@ -154,7 +154,7 @@ static func create_new_tileset_source(definition: Dictionary, base_dir: String) 
 	var image: Image = texture.get_image()
 
 	# Convert texture from CompressedTexture2D to CanvasTexture
-	if (Util.options.atlas_texture_type == AtlasTextureType.CanvasTexture):
+	if Util.options.atlas_texture_type == AtlasTextureType.CanvasTexture:
 		var canvas_texture = CanvasTexture.new()
 		canvas_texture.diffuse_texture = texture
 		texture = canvas_texture
@@ -312,7 +312,7 @@ static func save_tilesets(tilesets: Dictionary, base_dir: String) -> Dictionary:
 static func get_entity_def_tiles(definitions: Dictionary, tilesets: Dictionary) -> void:
 	for def in definitions.entities:
 		var entity: Dictionary = definitions.entities[def]
-		if (entity.tile == null):
+		if not entity.tile:
 			continue
 		# Find associated TileSet
 		var texture: AtlasTexture = FieldUtil.__parse_tile(entity.tile)

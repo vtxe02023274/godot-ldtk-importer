@@ -92,11 +92,11 @@ static func get_background_mode(mode_str: String) -> BackgroundMode:
 			return BackgroundMode.FIT_INSIDE
 
 static func setup_background_sprite(
-	sprite: Sprite2D,
-	level: LDTKLevel,
-	bg_mode: String,
-	texture_size: Vector2,
-	bg_data: Dictionary
+		sprite: Sprite2D,
+		level: LDTKLevel,
+		bg_mode: String,
+		texture_size: Vector2,
+		bg_data: Dictionary
 ) -> void:
 	var mode := get_background_mode(bg_mode)
 	var level_size := Vector2(level.size)
@@ -111,38 +111,35 @@ static func setup_background_sprite(
 	sprite.texture_repeat = CanvasItem.TEXTURE_REPEAT_DISABLED
 	sprite.region_enabled = true
 
-	match mode:
-		BackgroundMode.REPEAT:
-			sprite.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
-			sprite.scale = Vector2.ONE
-			sprite.position = Vector2.ZERO
-			# Use level dimensions for region rect in repeat mode
-			sprite.region_rect = Rect2(Vector2.ZERO, level_size)
+	if mode == BackgroundMode.REPEAT:
+		sprite.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+		sprite.scale = Vector2.ONE
+		sprite.position = Vector2.ZERO
+		# Use level dimensions for region rect in repeat mode
+		sprite.region_rect = Rect2(Vector2.ZERO, level_size)
+	else:
+		# Apply the initial position and crop from LDTK
+		sprite.position = Vector2(pos[0], pos[1])
+		sprite.region_rect = Rect2(crop[0], crop[1], crop[2], crop[3])
+		match mode:
+			BackgroundMode.UNSCALED:
+				sprite.scale = Vector2(ldtk_scale[0], ldtk_scale[1])
 
-		_:  # All other modes
-			# Apply the initial position and crop from LDTK
-			sprite.position = Vector2(pos[0], pos[1])
-			sprite.region_rect = Rect2(crop[0], crop[1], crop[2], crop[3])
+			BackgroundMode.FIT_INSIDE:
+				var scale := level_size.x / texture_size.x
+				sprite.scale = Vector2(scale, scale)
 
-			match mode:
-				BackgroundMode.UNSCALED:
-					sprite.scale = Vector2(ldtk_scale[0], ldtk_scale[1])
+			BackgroundMode.COVER:
+				var scale_x := level_size.x / texture_size.x
+				var scale_y := level_size.y / texture_size.y
+				var scale := maxf(scale_x, scale_y)
+				sprite.scale = Vector2(scale, scale)
 
-				BackgroundMode.FIT_INSIDE:
-					var scale := level_size.x / texture_size.x
-					sprite.scale = Vector2(scale, scale)
-
-				BackgroundMode.COVER:
-					var scale_x := level_size.x / texture_size.x
-					var scale_y := level_size.y / texture_size.y
-					var scale := maxf(scale_x, scale_y)
-					sprite.scale = Vector2(scale, scale)
-
-				BackgroundMode.COVER_DIRTY:
-					sprite.scale = Vector2(
-						level_size.x / texture_size.x,
-						level_size.y / texture_size.y
-					)
+			BackgroundMode.COVER_DIRTY:
+				sprite.scale = Vector2(
+					level_size.x / texture_size.x,
+					level_size.y / texture_size.y
+				)
 
 static func create_level(
 		level_data: Dictionary,
@@ -158,7 +155,7 @@ static func create_level(
 	level.bg_color = level_data.__bgColor
 	level.z_index = level_data.worldDepth
 
-	if (Util.options.verbose_output): Util.print("block", level_name, 1)
+	if Util.options.verbose_output: Util.print("block", level_name, 1)
 	Util.update_instance_reference(level_data.iid, level)
 
 	# Parse Neighbours
