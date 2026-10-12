@@ -8,9 +8,9 @@ extends Node2D
 ## Parsed EntityLayer definition.
 @export var definition: Dictionary
 ## List of entity instances on this EntityLayer.
-@export var entities: Array[Dictionary]
+@export var entities: Array
 ## Dictionary containing definitions for each unique Entity on this layer.
-@export var entity_definitions: Dictionary[int,Dictionary]
+@export var entity_definitions: Dictionary
 
 func _enter_tree() -> void:
 	LDTK.register_reference(iid, self)

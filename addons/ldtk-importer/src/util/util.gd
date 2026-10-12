@@ -2,6 +2,45 @@
 
 const DebugTime = preload("time-util.gd")
 
+
+# Stores import flags (used throughout the importer)
+static var options := {}
+
+# Assigned if using a LDTKEntityMapper resource.
+static var entity_mapper: LDTKEntityMapper
+
+static func recursive_set_owner(node: Node, owner: Node) -> void:
+	if not node.owner: node.set_owner(owner)
+	for child in node.get_children():
+		recursive_set_owner(child, owner)
+
+#region File Handling
+
+static func parse_file(source_file: String) -> Dictionary:
+	var json = FileAccess.open(source_file, FileAccess.READ)
+	if json == null:
+		push_error("\nFailed to open file: ", source_file)
+		return {}
+	var data = JSON.parse_string(json.get_as_text())
+	return data
+
+static func get_external_level(
+		level_data: Dictionary,
+		base_dir: String
+) -> Dictionary:
+
+	var level_file: String = base_dir + level_data.externalRelPath
+	var new_level_data: Dictionary = parse_file(level_file)
+	if new_level_data == null:
+		push_warning("Could not parse external level: ", level_file)
+		return level_data
+	else:
+		return new_level_data
+
+#endregion
+
+#region Version Management
+
 enum LDTK_VERSION {
 	FUTURE,
 	v1_5,
@@ -12,20 +51,6 @@ enum LDTK_VERSION {
 	UNSUPPORTED
 }
 static var file_version = LDTK_VERSION.UNSUPPORTED
-
-# Stores import flags (used throughout the importer)
-static var options := {}
-
-# Assigned if using a LDTKEntityMapper resource.
-static var entity_mapper: LDTKEntityMapper
-
-static func parse_file(source_file: String) -> Dictionary:
-	var json = FileAccess.open(source_file, FileAccess.READ)
-	if json == null:
-		push_error("\nFailed to open file: ", source_file)
-		return {}
-	var data = JSON.parse_string(json.get_as_text())
-	return data
 
 static func check_version(version: String, latest_version: String) -> bool:
 	if version.begins_with("0."):
@@ -50,12 +75,7 @@ static func check_version(version: String, latest_version: String) -> bool:
 			file_version = LDTK_VERSION.FUTURE
 	return true
 
-static func recursive_set_owner(node: Node, owner: Node) -> void:
-	#if node.owner and node.owner != owner: return
-	if not node.owner: node.set_owner(owner)
-
-	for child in node.get_children():
-		recursive_set_owner(child, owner)
+#endregion
 
 #region Performance Measurement
 

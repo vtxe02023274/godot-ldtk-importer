@@ -1,7 +1,6 @@
 @tool
 
 const Util = preload("util/util.gd")
-const LevelUtil = preload("util/level-util.gd")
 const FieldUtil = preload("util/field-util.gd")
 const PostImport = preload("post-import.gd")
 const Layer = preload("layer.gd")
@@ -23,7 +22,7 @@ static func build_levels(
 	var level_positions: Array
 	match world_data.worldLayout:
 		"LinearHorizontal":
-			var x = 0
+			var x := 0
 			for level in world_data.levels:
 				level_positions.append(Vector2i(x, 0))
 				x += level.pxWid
@@ -49,7 +48,7 @@ static func build_levels(
 		var level_data: Dictionary
 
 		if use_external_levels:
-			level_data = LevelUtil.get_external_level(level_data, base_dir)
+			level_data = Util.get_external_level(level_data, base_dir)
 		else:
 			level_data = world_data.levels[level_index]
 
@@ -121,6 +120,7 @@ static func setup_background_sprite(
 		# Apply the initial position and crop from LDTK
 		sprite.position = Vector2(pos[0], pos[1])
 		sprite.region_rect = Rect2(crop[0], crop[1], crop[2], crop[3])
+
 		match mode:
 			BackgroundMode.UNSCALED:
 				sprite.scale = Vector2(ldtk_scale[0], ldtk_scale[1])

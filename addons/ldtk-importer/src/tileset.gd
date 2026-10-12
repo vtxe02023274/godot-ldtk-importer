@@ -2,7 +2,6 @@
 
 const Util = preload("util/util.gd")
 const TileUtil = preload("util/tile-util.gd")
-const LevelUtil = preload("util/level-util.gd")
 const FieldUtil = preload("util/field-util.gd")
 const PostImport = preload("post-import.gd")
 
@@ -331,7 +330,7 @@ static func get_tileset_overrides(
 		var level_data: Dictionary
 
 		if external_levels:
-			level_data = LevelUtil.get_external_level(level_data, base_dir)
+			level_data = Util.get_external_level(level_data, base_dir)
 		else:
 			level_data = world_data.levels[level_index]
 
